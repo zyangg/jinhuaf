@@ -1,0 +1,188 @@
+<template>
+  <div class="container">
+    <div class="row justify-content-start">
+      <div class="col-10 mar10">
+        <el-checkbox
+          :indeterminate="isIndeterminate"
+          v-model="checkAll"
+          @change="handleCheckAllChange"
+        >全选</el-checkbox>
+        <div style="margin: 15px 0;"></div>
+        <el-checkbox-group v-model="checkedType" @change="handleCheckedCitiesChange">
+          <el-checkbox v-for="(item, index) in cities" :value="item.label" :key="index" :label="item.label"></el-checkbox>
+        </el-checkbox-group>
+        <div class="block">
+          <span class="demonstration">时间范围</span>
+          <el-date-picker
+            v-model="datePick"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            @change="changeTime"
+          ></el-date-picker>
+        </div>
+        <div class="mar10">
+           <el-button type="primary" @click="advSearch">搜索</el-button>
+        </div>
+      </div>
+      <div class="col-md-4 col-12 col-xl-3 col-sm-6"
+       v-for="(item, index) in tempData" :key="index">
+        <el-card :body-style="{ padding: '0px' }">
+          <img
+            :src="item.img"
+            class="image"
+          />
+          <div style="padding: 14px;">
+            <span>{{item.title}}</span>
+            <div class="bottom clearfix">
+              <time class="time">{{ item.date }}{{item.time}}</time>
+              <el-button type="text" class="button" @click="routeToNew(item._id, item.count)">查看全文</el-button>
+            </div>
+          </div>
+        </el-card>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+const cityOptions = [{
+  value: 'yule',
+  label: '娱乐'
+},
+{
+  value: 'meishi',
+  label: '美食'
+},
+{
+  value: 'shehui',
+  label: '社会'
+},
+{
+  value: 'caijing',
+  label: '财经'
+},
+{
+  value: 'shizheng',
+  label: '时政'
+}
+]
+export default {
+  data () {
+    return {
+      datePick: '',
+      currentDate: new Date(),
+      value: this.$route.params.value,
+      checkAll: false,
+      checkedType: ['yule', 'meishi'],
+      cities: cityOptions,
+      isIndeterminate: true,
+      newsData: [],
+      tempData: []
+    }
+  },
+  mounted () {
+    this.getNews()
+  },
+  methods: {
+    getNews () {
+      var that = this
+      this.$axios.get('/getNews').then(res => {
+        for (var i = 0; i < res.data.res.length; i++) {
+          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
+          res.data.res[i].img = URL.createObjectURL(aaa)
+        }
+        that.newsData = res.data.res
+        that.tempData = that.newsData.filter((el) => {
+          return el.title.includes(that.value) || el.content.includes(that.value) || el.describe.includes(that.value)
+        })
+        console.log('filter', that.tempData)
+      })
+    },
+    handleCheckAllChange (val) {
+      this.checkedType = val ? cityOptions : []
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange (value) {
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.cities.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.cities.length
+    },
+    transformArrayBufferToBase64 (buffer) {
+      var binary = ''
+      var bytes = new Uint8Array(buffer)
+      for (var len = bytes.byteLength, i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i])
+      }
+      return window.btoa(binary)
+    },
+    _base64ToArrayBuffer (base64) {
+      var binarystring = window.atob(base64)
+      var len = binarystring.length
+      var bytes = new Uint8Array(len)
+      for (var i = 0; i < len; i++) {
+        bytes[i] = binarystring.charCodeAt(i)
+      }
+      return bytes.buffer
+    },
+    changeTime () {
+      console.log('aaaa', this.datePick)
+    },
+    advSearch () {
+      this.$axios.post('/searchFindNew', {
+        data: {
+          datePick: this.datePick,
+          checkedType: this.checkedType
+        }
+      }).then((res) => {
+        this.tempData = res.date.res
+      })
+    },
+    routeToNew (id, count) {
+      var index1 = 0
+      this.$store.state.newsData.forEach((el, index) => {
+        if (el._id === id) {
+          index1 = index
+        }
+      })
+      this.$router.push({name: 'new', params: {id: index1, _id: id, count: count}})
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+.time {
+  font-size: 13px;
+  color: #999;
+}
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.button {
+  padding: 0;
+  float: right;
+}
+
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+.mar10 {
+    margin: 20px 0;
+}
+</style>
