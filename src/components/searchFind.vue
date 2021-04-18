@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container searchFind">
     <div class="row justify-content-start">
       <div class="col-10 mar10">
         <el-checkbox
@@ -9,7 +9,7 @@
         >全选</el-checkbox>
         <div style="margin: 15px 0;"></div>
         <el-checkbox-group v-model="checkedType" @change="handleCheckedCitiesChange">
-          <el-checkbox v-for="(item, index) in cities" :value="item.label" :key="index" :label="item.label"></el-checkbox>
+          <el-checkbox v-for="(item, index) in cities" :key="index" :label="item">{{trans[item]}}</el-checkbox>
         </el-checkbox-group>
         <div class="block">
           <span class="demonstration">时间范围</span>
@@ -24,11 +24,11 @@
           ></el-date-picker>
         </div>
         <div class="mar10">
-           <el-button type="primary" @click="advSearch">搜索</el-button>
+           <el-button type="primary" @click="advSearch()">搜索</el-button>
         </div>
       </div>
       <div class="col-md-4 col-12 col-xl-3 col-sm-6"
-       v-for="(item, index) in tempData" :key="index">
+       v-for="(item, index) in tempData" :key="index" v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
         <el-card :body-style="{ padding: '0px' }">
           <img
             :src="item.img"
@@ -43,49 +43,59 @@
           </div>
         </el-card>
       </div>
+           <!-- 底部分页 -->
+      <div class="col-12 mar20" style="margin-top:15px;margin-bottom:15px">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="1"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
 <script>
-const cityOptions = [{
-  value: 'yule',
-  label: '娱乐'
-},
-{
-  value: 'meishi',
-  label: '美食'
-},
-{
-  value: 'shehui',
-  label: '社会'
-},
-{
-  value: 'caijing',
-  label: '财经'
-},
-{
-  value: 'shizheng',
-  label: '时政'
-}
-]
+const cityOptions = ['keji', 'meishi', 'shehui', 'caijing', 'shizheng', 'yule']
 export default {
   data () {
     return {
+      currentPage: 1,
       datePick: '',
       currentDate: new Date(),
       value: this.$route.params.value,
       checkAll: false,
-      checkedType: ['yule', 'meishi'],
+      checkedType: ['meishi', 'yule'],
+      trans: {
+        'keji': '科技',
+        'shehui': '社会',
+        'yule': '娱乐',
+        'shizheng': '时政',
+        'caijing': '财经',
+        'meishi': '美食'
+      },
       cities: cityOptions,
       isIndeterminate: true,
       newsData: [],
-      tempData: []
+      tempData: [],
+      total: 0,
+      size: 5
     }
   },
   mounted () {
     this.getNews()
   },
   methods: {
+    handleSizeChange (val) {
+      this.size = val
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+    },
     getNews () {
       var that = this
       this.$axios.get('/getNews').then(res => {
@@ -95,9 +105,10 @@ export default {
         }
         that.newsData = res.data.res
         that.tempData = that.newsData.filter((el) => {
-          return el.title.includes(that.value) || el.content.includes(that.value) || el.describe.includes(that.value)
+          return el.title.includes(that.value) || el.content.includes(that.value) ||
+          el.describe.includes(that.value)
         })
-        console.log('filter', that.tempData)
+        that.total = that.tempData.length
       })
     },
     handleCheckAllChange (val) {
@@ -131,13 +142,19 @@ export default {
       console.log('aaaa', this.datePick)
     },
     advSearch () {
+      console.log('aaaaa', this.checkedType)
       this.$axios.post('/searchFindNew', {
         data: {
           datePick: this.datePick,
           checkedType: this.checkedType
         }
       }).then((res) => {
-        this.tempData = res.date.res
+        for (var i = 0; i < res.data.res.length; i++) {
+          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
+          res.data.res[i].img = URL.createObjectURL(aaa)
+        }
+        this.tempData = res.data.res
+        this.total = this.tempData.length
       })
     },
     routeToNew (id, count) {
@@ -153,6 +170,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.searchFind {
+  text-align: left;
+}
 .time {
   font-size: 13px;
   color: #999;
@@ -184,5 +204,8 @@ export default {
 }
 .mar10 {
     margin: 20px 0;
+}
+/deep/ .el-date-editor .el-range-separator {
+    width: 10%;
 }
 </style>

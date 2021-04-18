@@ -4,7 +4,6 @@
   <el-aside width="300px">
     <el-row class="tac">
   <el-col :span="12">
-    <h5>管理员操作</h5>
     <el-menu
      default-active="1"
       class="el-menu-vertical-demo">
@@ -13,12 +12,16 @@
         <router-link to="/publishArticle" active-class="active">文章发布</router-link>
       </el-menu-item>
       <el-menu-item index="2">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-location"></i>
         <router-link to="/userManage" active-class="active">人员管理</router-link>
       </el-menu-item>
       <el-menu-item index="3">
-        <i class="el-icon-setting"></i>
+        <i class="el-icon-menu"></i>
         <router-link to="/articleManage" active-class="active">文章管理</router-link>
+      </el-menu-item>
+        <el-menu-item index="4">
+        <i class="el-icon-document"></i>
+        <router-link to="/manageTalk" active-class="active">帖子管理</router-link>
       </el-menu-item>
     </el-menu>
   </el-col>

@@ -13,6 +13,7 @@ import articleManage from '@/components/articleManage'
 import publishPost from '@/components/publishPost'
 import searchFind from '@/components/searchFind'
 import userSetting from '@/components/userSetting'
+import manageTalk from '@/components/manageTalk'
 Vue.use(Router)
 
 export default new Router({
@@ -63,6 +64,11 @@ export default new Router({
           path: '/articleManage',
           name: 'articleManage',
           component: articleManage
+        },
+        {
+          path: '/manageTalk',
+          name: 'manageTalk',
+          component: manageTalk
         }
       ]
     },

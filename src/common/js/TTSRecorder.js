@@ -243,7 +243,6 @@ class TTSRecorder {
   }
   // 音频播放
   audioPlay () {
-    console.log('data', this.audioData)
     let audioData = this.audioData.slice(this.audioDataOffset)
     this.audioDataOffset += audioData.length
     let audioBuffer = this.audioContext.createBuffer(1, audioData.length, 22050)

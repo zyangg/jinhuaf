@@ -1,11 +1,14 @@
 <template>
   <div class="container marBottom">
-    <div class="row">
-      <!-- 轮播图 -->
+    <div class="row justify-content-center">
+      <!-- 轮播图区域 -->
       <div class="col-lg-8 col-md-12 col-12">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-12">
-            <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+              </ol>
               <div class="carousel-inner">
                 <div class="carousel-item active">
                   <img src="../assets/new-1.jpg" class="d-block w-100" alt="..." />
@@ -17,15 +20,37 @@
                   <img src="../assets/new-3.jpg" class="d-block w-100" alt="..." />
                 </div>
               </div>
-            </div>
-          </div>
+              <a
+                class="carousel-control-prev"
+                href="#carouselExampleIndicators"
+                role="button"
+                data-slide="prev"
+              >
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a
+                class="carousel-control-next"
+                href="#carouselExampleIndicators"
+                role="button"
+                data-slide="next"
+              >
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
         </div>
       </div>
-      <!-- 右侧 -->
+      <!-- 新闻排行版 -->
       <div class="col-lg-4 col-md-12 col-12">
-        <div class="row">
-          <div class="col-md-12 col-12">
             <div class="card-header">热点新闻</div>
+            <div class="card" v-for="(item,index) in topnews" :key="index">
+               <el-button
+                icon="el-icon-top"
+                  type="text"
+                  @click="$router.push({name: 'new',
+                    params: {_id: item._id, count: item.count}})"
+                >{{ item.title }}</el-button>
+            </div>
             <ul class="list-group">
               <li class="list-group-item" v-for="(item,index) in newRank" :key="index">
                 <el-button
@@ -35,127 +60,150 @@
                 >{{ item.title }}</el-button>
               </li>
             </ul>
-          </div>
-        </div>
       </div>
       <!-- 新闻模块 -->
-      <div class="text" style="margin-top:10px">
-        <div class="col-lg-12 col-md-12 col-12">
-          <el-tabs v-model="activeName" type="card" @tab-click="handleClick(activeName)">
-            <el-tab-pane label="全部新闻" name="first">
-              <div class="card" v-for="(item,index) in newsData" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+      <div class="col-lg-12 col-md-12 col-12 text" style="margin-top:10px">
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick(activeName)">
+          <el-tab-pane label="全部新闻" name="first">
+            <div
+              class="card"
+              v-for="(item,index) in newsData"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="娱乐新闻" name="second">
-              <div class="card" v-for="(item,index) in yule" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="娱乐新闻" name="second">
+            <div
+              class="card"
+              v-for="(item,index) in yule"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="美食新闻" name="third">
-              <div class="card" v-for="(item,index) in meishi" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="美食新闻" name="third">
+            <div
+              class="card"
+              v-for="(item,index) in meishi"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="社会新闻" name="fourth">
-              <div class="card" v-for="(item,index) in shehui" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="社会新闻" name="fourth">
+            <div
+              class="card"
+              v-for="(item,index) in shehui"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="财经新闻" name="five">
-              <div class="card" v-for="(item,index) in caijing" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="财经新闻" name="five">
+            <div
+              class="card"
+              v-for="(item,index) in caijing"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="时政新闻" name="six">
-              <div class="card" v-for="(item,index) in shizheng" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="时政新闻" name="six">
+            <div
+              class="card"
+              v-for="(item,index) in shizheng"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-            <el-tab-pane label="科技新闻" name="seven">
-              <div class="card" v-for="(item,index) in keji" :key="index"
-              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-                <div class="card-body">
-                  <h5 class="card-title">{{item.title}}</h5>
-                  <p class="card-text">{{item.describe}}</p>
-                  <button
-                    class="btn btn-primary"
-                    @click="$router.push({name: 'new',
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="科技新闻" name="seven">
+            <div
+              class="card"
+              v-for="(item,index) in keji"
+              :key="index"
+              v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+            >
+              <div class="card-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.describe}}</p>
+                <button
+                  class="btn btn-primary"
+                  @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                  >查看完整新闻</button>
-                </div>
+                >查看完整新闻</button>
               </div>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </div>
-      <!-- 分页 -->
-      <div class="col-10 mar20">
-        <div class="row justify-content-center">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[5, 10, 15, 20]"
-              :page-size="1"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-            ></el-pagination>
-        </div>
+      <!-- 底部分页 -->
+      <div class="col-12 mar20">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="1"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
       </div>
     </div>
   </div>
@@ -170,6 +218,7 @@ export default {
       size: 5,
       currentPage: 1,
       newRank: [],
+      topnews: [],
       newsData: [],
       meishi: [],
       keji: [],
@@ -215,6 +264,10 @@ export default {
     this.$axios.get('/newRanking').then(res => {
       this.newRank = res.data.res
     })
+    this.$axios.get('/getTopArticle').then(res => {
+      console.log('dart', res.data.res)
+      this.topnews = res.data.res
+    })
   },
   methods: {
     handleSizeChange (val) {
@@ -224,6 +277,7 @@ export default {
       this.currentPage = val
     },
     handleClick (activeName) {
+      this.currentPage = 1
       if (activeName === 'first') {
         this.total = this.newsData.length
       }
@@ -280,6 +334,13 @@ export default {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.el-button {
+  white-space: normal;
+}
+.el-pagination {
+  white-space: normal;
+}
+
 // @media (min-width: 576px) { ... }
 
 // Medium devices (tablets, 768px and up)

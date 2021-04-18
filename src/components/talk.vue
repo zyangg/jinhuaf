@@ -29,7 +29,7 @@
              <span class="iconfont icon-xihuan marlr">
                <span class="font">{{item.like}}</span></span>
              <span class="iconfont icon-pinglun marlr">
-               <span class="font">{{item.reply}}</span></span>
+               <span class="font">{{replyNum}}</span></span>
             </li>
           </ul>
           <div class="card-body">
@@ -46,7 +46,8 @@ export default {
   name: 'talk',
   data () {
     return {
-      postData: []
+      postData: [],
+      replyNum: 0
     }
   },
   methods: {
@@ -69,6 +70,12 @@ export default {
     },
     goReply (index) {
       this.$router.push({name: 'reply', params: {id: index}})
+    },
+    getReply (id) {
+      var self = this
+      this.$axios.post('/getReply', {data: id}).then((res) => {
+        self.replyNum = res.data.res.length
+      })
     }
   },
   mounted () {
@@ -76,6 +83,7 @@ export default {
       for (var i = 0; i < res.data.res.length; i++) {
         var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
         res.data.res[i].img = URL.createObjectURL(aaa)
+        this.getReply(res.data.res[i]._id)
       }
       this.postData = res.data.res
       this.$store.commit('savePost', res.data.res)

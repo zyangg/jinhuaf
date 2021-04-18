@@ -38,10 +38,7 @@
           <img width="100%" :src="form.dialogImageUrl" alt />
         </el-dialog>
       </el-form-item>
-      <el-form-item label="新闻内容">
-        <el-input type="textarea" v-model="form.content" :rows="20"></el-input>
-      </el-form-item>
-      <el-form-item label="发布时间">
+            <el-form-item label="发布时间">
         <el-col :span="11">
           <el-date-picker type="date"
           placeholder="选择日期"
@@ -56,6 +53,9 @@
           value-format="HH:mm:ss"
           style="width: 100%;"></el-time-picker>
         </el-col>
+      </el-form-item>
+      <el-form-item label="新闻内容">
+        <el-input type="textarea" v-model="form.content" :rows="20"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即发布</el-button>

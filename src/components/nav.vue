@@ -23,7 +23,7 @@
             <router-link to="/talk" class="nav-link" active-class="active">新闻论坛</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/publishArticle" class="nav-link" active-class="active">管理员编辑</router-link>
+            <router-link to="/publishArticle" class="nav-link" active-class="active">网站管理</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/userSetting" class="nav-link" active-class="active" v-show="$store.state.loginState">用户设置</router-link>
