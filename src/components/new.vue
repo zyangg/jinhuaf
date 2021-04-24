@@ -249,6 +249,7 @@ export default {
 .new {
   text-align: left;
   margin-top: 20px;
+  line-height: 1.8;
 }
 .mar10 {
   margin: 10px 0 10px;

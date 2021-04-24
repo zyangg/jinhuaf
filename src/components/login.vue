@@ -12,19 +12,23 @@
           label-position="top"
         >
           <el-form-item>
-            <h3 style="min-width: 130px">登录界面</h3>
+              <div style="margin-bottom: 20px">
+      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+    </div>
+            <h1 style="min-width: 130px" class="title">登录界面</h1>
           </el-form-item>
-          <el-form-item label="用户名" prop="username">
-            <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
-          </el-form-item>
+            <el-form-item label="用户名" prop="username">
+              <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')" style="width:50%;margin-top:20px">登录</el-button>
+            </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="text" @click="$router.push('/register')">没有账号？去创建一个账号</el-button>
+              没有账号？
+              <el-button type="text" @click="$router.push('/register')">去创建一个账号</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -91,10 +95,18 @@ export default {
 }
 </script>
 <style scoped lang="less">
-  /deep/ .el-form--label-top .el-form-item__label {
-    display: block;
-    float: left;
-    text-align: left;
-    padding: 0 0 10px;
+/deep/ .el-form--label-top .el-form-item__label {
+  display: block;
+  float: left;
+  text-align: left;
+  padding: 0 0 10px;
+}
+.title {
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
 }
 </style>

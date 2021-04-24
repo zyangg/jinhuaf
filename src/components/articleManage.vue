@@ -26,7 +26,6 @@
           <el-button type="text" size="small" @click="notop(tableData[scope.$index]._id)" v-if="tableData[scope.$index].top">取消置顶</el-button>
           <el-button type="text" size="small" @click="Modify(tableData[scope.$index]._id, scope.row.title, scope.row.author, scope.row.date, scope.row.time, scope.row.count)">编辑</el-button>
           <el-button type="text" size="small" @click="Delete(tableData[scope.$index]._id)">删除</el-button>
-          <el-button type="text" size="small">推送</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,6 +52,18 @@
         <el-button type="primary" @click="confirmModify()">确 定</el-button>
       </span>
     </el-dialog>
+      <div class="block" style="margin-top:20px">
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+  </div>
     <el-dialog title="删除" :visible.sync="dialogDelete" width="50%" :before-close="handleClose">
       <span>确认删除用户信息吗？删除后无法修改</span>
       <span slot="footer" class="dialog-footer">

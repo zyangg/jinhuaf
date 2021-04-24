@@ -12,7 +12,11 @@
           style="margin-top: 20px"
           label-position="top"
         >
-          <el-form-item><h3 style="mix-width:130px">注册界面</h3></el-form-item>
+          <el-form-item>
+                      <div style="margin-bottom: 20px">
+      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+    </div>
+            <h1 style="mix-width:130px" class="title">注册界面</h1></el-form-item>
           <el-form-item label="用户名" prop="name">
             <el-input type="type" v-model="ruleForm.name" autocomplete="off"></el-input>
           </el-form-item>
@@ -23,10 +27,11 @@
             <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')" style="width:50%;margin-top:20px">注册</el-button>
           </el-form-item>
            <el-form-item>
-        <el-button type="text" @click="$router.push('/login')">已有账号? 去登录</el-button>
+             已有账号?
+        <el-button type="text" @click="$router.push('/login')">去登录</el-button>
       </el-form-item>
         </el-form>
       </div>
@@ -120,5 +125,13 @@ export default {
     float: left;
     text-align: left;
     padding: 0 0 10px;
+}
+.title {
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
 }
 </style>

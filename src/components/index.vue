@@ -1,68 +1,76 @@
 <template>
-  <div class="container marBottom">
-    <div class="row justify-content-center">
+  <div class="container marBottom index">
+    <div class="row">
       <!-- 轮播图区域 -->
       <div class="col-lg-8 col-md-12 col-12">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-              <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-              </ol>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img src="../assets/new-1.jpg" class="d-block w-100" alt="..." />
-                </div>
-                <div class="carousel-item">
-                  <img src="../assets/new-2.jpg" class="d-block w-100" alt="..." />
-                </div>
-                <div class="carousel-item">
-                  <img src="../assets/new-3.jpg" class="d-block w-100" alt="..." />
-                </div>
-              </div>
-              <a
-                class="carousel-control-prev"
-                href="#carouselExampleIndicators"
-                role="button"
-                data-slide="prev"
-              >
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a
-                class="carousel-control-next"
-                href="#carouselExampleIndicators"
-                role="button"
-                data-slide="next"
-              >
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="../assets/new-1.jpg" class="d-block w-100" alt="..." />
+            </div>
+            <div class="carousel-item">
+              <img src="../assets/new-2.jpg" class="d-block w-100" alt="..." />
+            </div>
+            <div class="carousel-item">
+              <img src="../assets/new-3.jpg" class="d-block w-100" alt="..." />
+            </div>
+          </div>
+          <a
+            class="carousel-control-prev"
+            href="#carouselExampleIndicators"
+            role="button"
+            data-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a
+            class="carousel-control-next"
+            href="#carouselExampleIndicators"
+            role="button"
+            data-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
         </div>
       </div>
       <!-- 新闻排行版 -->
       <div class="col-lg-4 col-md-12 col-12">
-            <div class="card-header">热点新闻</div>
-            <div class="card" v-for="(item,index) in topnews" :key="index">
-               <el-button
-                icon="el-icon-top"
-                  type="text"
-                  @click="$router.push({name: 'new',
+        <div class="card-header">热点新闻</div>
+        <div class="card" v-for="(item,index) in topnews" :key="index">
+          <el-button
+            type="text"
+            @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                >{{ item.title }}</el-button>
-            </div>
-            <ul class="list-group">
-              <li class="list-group-item" v-for="(item,index) in newRank" :key="index">
-                <el-button
-                  type="text"
-                  @click="$router.push({name: 'new',
+          >
+            <span class="iconfont icon-zhiding"></span>
+            {{ item.title }}
+          </el-button>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item flex" v-for="(item,index) in newRank" :key="index">
+            <img
+              class="mr-3"
+              :src="newRank[index].img"
+              width="50px"
+              height="50px"
+            />
+            <el-button
+              type="text"
+              @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
-                >{{ item.title }}</el-button>
-              </li>
-            </ul>
+            >{{index+1}}.{{ item.title }}</el-button>
+          </li>
+        </ul>
       </div>
       <!-- 新闻模块 -->
-      <div class="col-lg-12 col-md-12 col-12 text" style="margin-top:10px">
+      <div class="col-lg-8 col-md-12 col-12 text" style="margin-top:10px;">
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick(activeName)">
           <el-tab-pane label="全部新闻" name="first">
             <div
@@ -71,11 +79,16 @@
               :key="index"
               v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
             >
+              <div class="card-body flex1">
+                <div>
+                  <h5 class="card-title">{{item.title}}</h5>
+                  <p class="card-text">{{item.describe}}</p>
+                </div>
+                <img :src="item.img" width="100px" height="100px" />
+              </div>
               <div class="card-body">
-                <h5 class="card-title">{{item.title}}</h5>
-                <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -93,7 +106,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -111,7 +124,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -129,7 +142,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -147,7 +160,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -165,7 +178,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -183,7 +196,7 @@
                 <h5 class="card-title">{{item.title}}</h5>
                 <p class="card-text">{{item.describe}}</p>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-light"
                   @click="$router.push({name: 'new',
                     params: {_id: item._id, count: item.count}})"
                 >查看完整新闻</button>
@@ -191,6 +204,54 @@
             </div>
           </el-tab-pane>
         </el-tabs>
+      </div>
+      <div class="col-lg-4 col-md-12 col-12" style="margin-top: 10px">
+        <div class="row">
+          <div class="col-lg-12 col-md-3 col-6">
+            <div class="card bg-light mb-3" style="max-width: 20rem;">
+              <div class="card-header">Header</div>
+              <div class="card-body">
+                <h5 class="card-title">Primary card title</h5>
+                <p
+                  class="card-text"
+                >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              </div>
+            </div>
+          </div>
+           <div class="col-lg-12 col-md-3 col-6">
+            <div class="card bg-light mb-3" style="max-width: 20rem;">
+              <div class="card-header">Header</div>
+              <div class="card-body">
+                <h5 class="card-title">Primary card title</h5>
+                <p
+                  class="card-text"
+                >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              </div>
+            </div>
+          </div>
+           <div class="col-lg-12 col-md-3 col-6">
+            <div class="card bg-light mb-3" style="max-width: 20rem;">
+              <div class="card-header">Header</div>
+              <div class="card-body">
+                <h5 class="card-title">Primary card title</h5>
+                <p
+                  class="card-text"
+                >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              </div>
+            </div>
+          </div>
+           <div class="col-lg-12 col-md-3 col-6">
+            <div class="card bg-light mb-3" style="max-width: 20rem;">
+              <div class="card-header">Header</div>
+              <div class="card-body">
+                <h5 class="card-title">Primary card title</h5>
+                <p
+                  class="card-text"
+                >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- 底部分页 -->
       <div class="col-12 mar20">
@@ -262,6 +323,12 @@ export default {
       this.$store.commit('saveNew', res.data.res)
     })
     this.$axios.get('/newRanking').then(res => {
+      for (var i = 0; i < res.data.res.length; i++) {
+        var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], {
+          type: 'image/png'
+        })
+        res.data.res[i].img = URL.createObjectURL(aaa)
+      }
       this.newRank = res.data.res
     })
     this.$axios.get('/getTopArticle').then(res => {
@@ -321,6 +388,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+@import "../assets/font/iconfont.css";
+.index {
+  text-align: left;
+}
 .jumbotron {
   height: 200px;
 }
@@ -335,10 +406,24 @@ export default {
   margin-bottom: 10px;
 }
 .el-button {
-  white-space: normal;
+  line-height: normal;
+  color: black!important;
+  overflow: hidden!important;
+  text-overflow:ellipsis!important;
+  white-space: nowrap!important;
 }
 .el-pagination {
   white-space: normal;
+}
+.flex {
+  display: flex;
+}
+.flex1 {
+  display: flex;
+  justify-content: space-between;
+}
+.floatR {
+  float: right;
 }
 
 // @media (min-width: 576px) { ... }

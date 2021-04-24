@@ -2,23 +2,17 @@
   <div class="container reply" style="margin-top: 10px">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8">
-        <div class="card">
-          <div class="card-header">{{postData[id].name}}</div>
-          <div class="card-body">
-            <blockquote class="blockquote mb-0">
-              <p>{{postData[id].desc}}</p>
-              <footer class="blockquote-footer">
-                <cite title="Source Title">{{postData[id].author}}</cite>
-              </footer>
-            </blockquote>
-          </div>
-        </div>
-        <div style="cursor:pointer">
-          如果你喜欢这篇帖子可以给点个小爱心
-          <span class="iconfont icon-xihuan" @click="likeReply()"></span>
+        <div class="jumbotron">
+          <h1 class="display-3" style="font-size:2.8rem">{{postData[id].name}}</h1>
+          <p class="lead">{{postData[id].desc}}</p>
+          <hr class="my-4" />
+          <p>{{postData[id].author}}</p>
+          <p style="cursor:pointer">
+            <span>如果你喜欢这篇帖子可以给点个小爱心</span><span class="iconfont icon-xihuan" @click="likeReply()"></span>
+          </p>
         </div>
         <div class="textarea">
-          <el-input type="textarea" v-model="form.desc" placeholder="在这里可以随意评论"></el-input>
+          <el-input type="textarea" v-model="form.desc" placeholder="在这里可以随意评论" maxlength="50" show-word-limit></el-input>
           <div class="button" @click="publish">
             <el-button>发布</el-button>
           </div>

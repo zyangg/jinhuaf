@@ -1,5 +1,9 @@
 <template>
-    <div>
+    <div class="manageTalk">
+           <el-row>
+      <el-col :span="5"><el-input  placeholder="请输入内容" v-model="searchArticle" clearable></el-input></el-col>
+      <el-col :span="5"><el-button icon="el-icon-search" circle @click="search()"></el-button></el-col>
+    </el-row>
    <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column prop="name" label="标题" width="180"></el-table-column>
       <el-table-column prop="author" label="作者" width="180"></el-table-column>
@@ -11,6 +15,18 @@
         </template>
       </el-table-column>
     </el-table>
+       <div class="block" style="margin-top:20px">
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+  </div>
     <el-dialog title="删除" :visible.sync="dialogDelete" width="50%" :before-close="handleClose">
       <span>确认删除用户信息吗？删除后无法修改</span>
       <span slot="footer" class="dialog-footer">
@@ -85,5 +101,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
+.manageTalk {
+  text-align: left;
+}
 </style>

@@ -46,6 +46,13 @@
       "font_class": "pinglun",
       "unicode": "e602",
       "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "18781885",
+      "name": "置顶",
+      "font_class": "zhiding",
+      "unicode": "e610",
+      "unicode_decimal": 58896
     }
   ]
 }

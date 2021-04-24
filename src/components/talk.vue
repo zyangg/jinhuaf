@@ -37,6 +37,19 @@
           </div>
         </div>
       </div>
+           <!-- 底部分页 -->
+      <div class="col-12" style="margin-top:30px">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="1"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="100"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>

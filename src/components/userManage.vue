@@ -31,6 +31,18 @@
         </template>
       </el-table-column>
     </el-table>
+          <div class="block" style="margin-top:20px">
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+  </div>
     <el-dialog title="添加" :visible.sync="dialogAdd" width="50%" :before-close="handleClose">
       <el-form label-width="80px" :model="addForm" :rules="rules" ref="addForm">
         <el-form-item label="用户名" prop="name">
