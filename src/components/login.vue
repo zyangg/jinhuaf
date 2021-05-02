@@ -12,23 +12,27 @@
           label-position="top"
         >
           <el-form-item>
-              <div style="margin-bottom: 20px">
-      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-    </div>
+            <div style="margin-bottom: 20px">
+              <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="50"></el-avatar>
+            </div>
             <h1 style="min-width: 130px" class="title">登录界面</h1>
           </el-form-item>
-            <el-form-item label="用户名" prop="username">
-              <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')" style="width:50%;margin-top:20px">登录</el-button>
-            </el-form-item>
+          <el-form-item label="用户名" prop="username">
+            <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+          </el-form-item>
           <el-form-item>
-              没有账号？
-              <el-button type="text" @click="$router.push('/register')">去创建一个账号</el-button>
+            <el-button
+              type="primary"
+              @click="submitForm('ruleForm')"
+              style="width:50%;margin-top:20px"
+            >登录</el-button>
+          </el-form-item>
+          <el-form-item>
+            没有账号？
+            <el-button type="text" @click="$router.push('/register')">去创建一个账号</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -46,11 +50,11 @@ export default {
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+          { min: 3, max: 10, message: '用户名长度3 到 10 个字符', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+          { min: 3, max: 10, message: '密码长度3 到 10 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -74,7 +78,7 @@ export default {
                 this.$store.commit('saveLogin', sessionStorage.getItem('name'))
                 this.$router.push('/')
               } else {
-                this.$message.error('登录失败')
+                this.$message.error('登录失败,用户名或密码错误')
               }
             })
         } else {

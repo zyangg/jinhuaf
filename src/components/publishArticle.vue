@@ -55,7 +55,8 @@
         </el-col>
       </el-form-item>
       <el-form-item label="新闻内容">
-        <el-input type="textarea" v-model="form.content" :rows="20"></el-input>
+        <el-input type="textarea" v-model="form.content" :rows="20" maxlength="30"
+  show-word-limit></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即发布</el-button>

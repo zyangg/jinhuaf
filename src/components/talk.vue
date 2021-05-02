@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container talk">
     <div class="row">
       <div class="col-12">
         <div class="row marTop">
@@ -13,7 +13,9 @@
         </div>
       </div>
 
-      <div class="col-lg-4 col-md-6 col-12" v-for="(item,index) in this.postData" :key="index">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12" v-for="(item,index) in this.postData" :key="index"
+      v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+      >
         <div class="card">
           <img class="card-img-top" :src="item.img" alt="Card image cap" />
           <div class="card-body">
@@ -38,16 +40,30 @@
         </div>
       </div>
            <!-- 底部分页 -->
-      <div class="col-12" style="margin-top:30px">
+      <div class="col-12 d-none d-md-block" style="margin-top:20px;margin-bottom:20px">
         <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-sizes="[5, 10, 15, 20]"
-          :page-size="1"
+          :page-size="size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="100"
+          :total="total"
+        ></el-pagination>
+      </div>
+         <div class="col-12 d-block d-md-none" style="margin-top:20px;margin-bottom:20px">
+        <el-pagination
+          small
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="size"
+          layout="sizes, prev, pager"
+          :total="total"
+          :pager-count="5"
         ></el-pagination>
       </div>
     </div>
@@ -60,7 +76,10 @@ export default {
   data () {
     return {
       postData: [],
-      replyNum: 0
+      replyNum: 0,
+      total: 0,
+      size: 5,
+      currentPage: 1
     }
   },
   methods: {
@@ -89,6 +108,12 @@ export default {
       this.$axios.post('/getReply', {data: id}).then((res) => {
         self.replyNum = res.data.res.length
       })
+    },
+    handleSizeChange (val) {
+      this.size = val
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
     }
   },
   mounted () {
@@ -99,6 +124,7 @@ export default {
         this.getReply(res.data.res[i]._id)
       }
       this.postData = res.data.res
+      this.total = this.postData.length
       this.$store.commit('savePost', res.data.res)
     })
   }
@@ -107,6 +133,9 @@ export default {
 
 <style scoped lang="less">
 @import '../assets/font/iconfont.css';
+.talk {
+  text-align: left;
+}
 .marTop {
   margin: 10px 0;
 }

@@ -104,23 +104,11 @@ export default {
     },
     async change (file) {
       var that = this
-      console.log('change', file, typeof file.raw)
       var reader = new FileReader()
       reader.addEventListener('loadend', function (e) {
-        // console.log('ee', that.transformArrayBufferToBase64(e.target.result), e.target.result)
         that.form.dialogImageUrl = that.transformArrayBufferToBase64(
           e.target.result
         )
-        // reader.result 包含被转化为类型数组 typed array 的 blob
-        console.log(
-          'result',
-          that._base64ToArrayBuffer(
-            that.transformArrayBufferToBase64(e.target.result)
-          ),
-          e.target.result
-        )
-        var aaa = new Blob([e.target.result], { type: 'image/png' })
-        console.log('aaaa', URL.createObjectURL(aaa))
       })
 
       reader.readAsArrayBuffer(file.raw)

@@ -57,11 +57,11 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
+      :current-page="currentPage"
+      :page-sizes="[5, 10, 15, 20]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="total">
     </el-pagination>
   </div>
     <el-dialog title="删除" :visible.sync="dialogDelete" width="50%" :before-close="handleClose">
@@ -79,6 +79,8 @@ export default {
     return {
       searchArticle: '',
       tableData: [],
+      total: 25,
+      currentPage: 1,
       tableDataTemp: [],
       dialogModify: false,
       dialogDelete: false,
@@ -124,8 +126,9 @@ export default {
     },
     getAllNews () {
       this.$axios.get('/getNews').then(res => {
-        this.tableData = res.data.res
+        this.tableData = res.data.res.slice(0, 5)
         this.tableDataTemp = res.data.res
+        // this.total = this.tableData.length
       })
     },
     Modify (id, title, author, date, time, count) {

@@ -36,11 +36,11 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
+      :current-page="currentPage"
+      :page-sizes="[5, 10, 15, 20]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="total">
     </el-pagination>
   </div>
     <el-dialog title="添加" :visible.sync="dialogAdd" width="50%" :before-close="handleClose">
@@ -103,6 +103,8 @@ export default {
       }
     }
     return {
+      currentPage: 1,
+      total: 20,
       searchUser: '',
       dialogAdd: false,
       dialogModify: false,

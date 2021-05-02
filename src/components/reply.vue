@@ -2,7 +2,7 @@
   <div class="container reply" style="margin-top: 10px">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8">
-        <div class="jumbotron">
+        <div class="jumbotron" v-if="postData.length > 0">
           <h1 class="display-3" style="font-size:2.8rem">{{postData[id].name}}</h1>
           <p class="lead">{{postData[id].desc}}</p>
           <hr class="my-4" />
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center" v-if="replyData.length > 0">
       <div class="col-12 col-md-8" v-for="(item,index) in replyData" :key="index">
         <div class="card">
           <div class="card-body">
@@ -64,11 +64,7 @@ export default {
       replyData: [],
       reply1Data: [],
       id: 0,
-      postData: [
-        {
-          name: ''
-        }
-      ],
+      postData: [],
       flag: -1
     }
   },
@@ -148,6 +144,12 @@ export default {
       }
       return window.btoa(binary)
     },
+    likeReply () {
+      this.$message({
+        message: '帖子主已收到',
+        type: 'success'
+      })
+    },
     _base64ToArrayBuffer (base64) {
       var binarystring = window.atob(base64)
       var len = binarystring.length
@@ -156,12 +158,6 @@ export default {
         bytes[i] = binarystring.charCodeAt(i)
       }
       return bytes.buffer
-    },
-    likeReply () {
-      this.$message({
-        message: '帖子主已收到',
-        type: 'success'
-      })
     }
   },
   async mounted () {

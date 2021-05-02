@@ -26,7 +26,12 @@
             <router-link to="/publishArticle" class="nav-link" active-class="active">网站管理</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/userSetting" class="nav-link" active-class="active" v-show="$store.state.loginState">用户设置</router-link>
+            <router-link
+              to="/userSetting"
+              class="nav-link"
+              active-class="active"
+              v-show="$store.state.loginState"
+            >新闻推送</router-link>
           </li>
         </ul>
         <div class="form-inline my-2 my-lg-0 mar20">
@@ -58,7 +63,7 @@
             >{{$store.state.loginState}}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="#" @click="logout()">退出</a>
-              <a class="dropdown-item" href="#">
+              <!-- <a class="dropdown-item" href="#">
                 <button type="button" class="btn btn-light">
                   评论
                   <span class="badge badge-light">4</span>
@@ -69,7 +74,7 @@
                   回复
                   <span class="badge badge-light">4</span>
                 </button>
-              </a>
+              </a> -->
             </div>
           </li>
         </ul>
@@ -104,6 +109,10 @@ export default {
     logout () {
       sessionStorage.clear()
       this.$store.commit('saveLogin', sessionStorage.getItem('name'))
+      this.$message({
+        message: '退出成功',
+        type: 'success'
+      })
     },
     isManager (name) {
       this.$axios
@@ -115,7 +124,7 @@ export default {
         })
     },
     searchFind () {
-      this.$router.push({name: 'searchFind', params: {value: this.search}})
+      this.$router.push({ name: 'searchFind', params: { value: this.search } })
     }
   }
 }
