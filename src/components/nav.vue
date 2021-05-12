@@ -42,7 +42,7 @@
             aria-label="Search"
             v-model="search"
           />
-          <button class="btn btn-primary my-2 my-sm-0" @click="searchFind">Search</button>
+          <button class="btn btn-primary my-2 my-sm-0" @click="searchFind()">Search</button>
         </div>
         <ul class="navbar-nav">
           <li class="nav-item" v-show="!$store.state.loginState">
@@ -109,6 +109,7 @@ export default {
     logout () {
       sessionStorage.clear()
       this.$store.commit('saveLogin', sessionStorage.getItem('name'))
+      this.$store.commit('saveManager', false)
       this.$message({
         message: '退出成功',
         type: 'success'
@@ -124,7 +125,7 @@ export default {
         })
     },
     searchFind () {
-      this.$router.push({ name: 'searchFind', params: { value: this.search } })
+      this.$router.push({ path: '/searchFind', query: { value: this.search } })
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="container new">
+    <el-backtop></el-backtop>
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-10">
         <div class="row">
@@ -9,45 +10,60 @@
         </div>
         <div class="row" style="margin-top:20px">
           <div class="title-bar col-12">
-            <span>发布:</span><span>{{newsData.author}}</span>
-            <span>发布时间:</span>{{newsData.date}} {{newsData.time}}<span></span>
+            <span>发布:</span>
+            <span>{{newsData.author}}</span>
+            <span>发布时间:</span>
+            {{newsData.date}} {{newsData.time}}
+            <span></span>
           </div>
         </div>
         <div class="row mar10">
-          <div class="col-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{newsData.describe}}</div>
+          <div class="col-12">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{newsData.describe}}
+          </div>
         </div>
         <div class="row mar10">
-          <div class="col-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{newsData.content.slice(0,newsData.content.length/2)}}</div>
+          <div class="col-12">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{newsData.content.slice(0,newsData.content.length/2)}}
           </div>
+        </div>
         <div class="row justify-content-center" style="margin-top:10px;margin-bottom:15px">
           <div class="col-8">
-            <img :src="newsData.img" class="d-block w-100" alt />
+                  <el-carousel :interval="5000" arrow="always">
+            <el-carousel-item v-for="(item,index) in newsData.img" :key="index">
+              <img :src="item" alt width="100%" height="100%" />
+            </el-carousel-item>
+          </el-carousel>
           </div>
         </div>
-             <div class="row mar10">
-          <div class="col-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{newsData.content.slice(newsData.content.length/2)}}</div>
+        <div class="row mar10">
+          <div class="col-12">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{newsData.content.slice(newsData.content.length/2)}}
           </div>
-          <div class="row mar10" style="color:black;font-weight: 700;">
-            <div class="col-12">来源：金华求新新闻网</div>
-            <div class="col-12">审核：金华求新新闻网</div>
-            <div class="col-12">未经审核，不得转载</div>
-          </div>
+        </div>
+        <div class="row mar10">
+          <div class="col-12">来源：金华求新新闻网</div>
+          <div class="col-12">审核：金华求新新闻网</div>
+          <div class="col-12">未经同意，不得转载</div>
+        </div>
         <div class="row mar10" style="margin-top:20px">
-          <el-button icon="el-icon-setting" @click="isplay" circle></el-button>
-          <el-button icon="el-icon-video-play" @click="play" circle></el-button>
-          <el-button icon="el-icon-video-pause" @click="stop" circle></el-button>
-          <el-button icon="el-icon-download" @click="download" circle></el-button>
+          <div class="col-12">
+            <el-button icon="el-icon-setting" @click="isplay" circle></el-button>
+            <el-button icon="el-icon-video-play" @click="play" circle></el-button>
+            <el-button icon="el-icon-video-pause" @click="stop" circle></el-button>
+            <el-button icon="el-icon-download" @click="download" circle></el-button>
+          </div>
         </div>
         <div class="row mar10" v-show="isPlay">
           <div class="block col-8">
-            <span class="demonstration">音量</span>
+            <span class="demonstration">语速</span>
             <el-slider v-model="form.speed" :step="10"></el-slider>
           </div>
           <div class="block col-8">
-            <span class="demonstration">语速</span>
+            <span class="demonstration">音量</span>
             <el-slider v-model="form.voice" :step="10"></el-slider>
           </div>
           <div class="block col-8">
@@ -66,11 +82,13 @@
           </div>
         </div>
         <div class="row" v-if="newReply.length>0" style="margin-top:30px;margin-bottom:20px">
-          <div v-for="(item, index) in newReply" :key="index">
-            <span>
-              <el-button type="text">{{item.name}}</el-button>
-              说:{{item.desc}}
-            </span>
+          <div v-for="(item, index) in newReply" :key="index" class="col-12" style="margin-bottom:10px">
+            <div class="flex">
+              <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+              &nbsp;&nbsp;<span>{{item.name}}</span>
+            </div>
+            <div style="padding-left:50px;" class="flex1"><span>{{item.desc}}</span>
+            <span style="cursor:pointer" v-if="$store.state.isManager || item.name === $store.state.loginState" @click="delNewReply(item._id)"><i class="el-icon-delete"></i></span></div>
           </div>
         </div>
       </div>
@@ -100,20 +118,19 @@ export default {
     }
   },
   async mounted () {
-    await this.$axios.get('/getNews').then(res => {
-      for (var i = 0; i < res.data.res.length; i++) {
-        var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], {
+    await this.$axios.post('/findNewById', {
+      data: {
+        id: this.$route.params._id
+      }
+    }).then(res => {
+      for (var i = 0; i < res.data.res.img.length; i++) {
+        var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.img[i])], {
           type: 'image/png'
         })
-        res.data.res[i].img = URL.createObjectURL(aaa)
+        res.data.res.img[i] = URL.createObjectURL(aaa)
       }
-      res.data.res.forEach(el => {
-        if (el._id === this.$route.params._id) {
-          this.newsData = el
-        }
-      })
+      this.newsData = res.data.res
     })
-
     this.form.text = this.newsData.content
     this.getNewReply()
     this.$axios.post('/addNewCount', {
@@ -132,6 +149,19 @@ export default {
     }
   },
   methods: {
+    delNewReply (id) {
+      this.$axios
+        .post('/delNewReply', {
+          data: id })
+        .then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.desc = ''
+          this.getNewReply()
+        })
+    },
     isplay () {
       this.isPlay = !this.isPlay
     },
@@ -162,6 +192,10 @@ export default {
         speed: this.form.speed,
         voice: this.form.voice
       })
+      this.$message({
+        message: '正在合成',
+        duration: 5000
+      })
       ttsRecorder.downloadWAV()
     },
     downloadPCM () {
@@ -170,6 +204,10 @@ export default {
         text: this.form.text,
         speed: this.form.speed,
         voice: this.form.voice
+      })
+      this.$message({
+        message: '正在合成',
+        duration: 5000
       })
       ttsRecorder.downloadPCM()
     },
@@ -226,25 +264,33 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../assets/font/iconfont.css";
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex1 {
+  display: flex;
+  justify-content: space-between;
+}
 .iconfont {
   font-size: 30px;
 }
 .title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: bold;
-    color: #336699;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  color: #336699;
 }
 .title-bar {
-    color: #777;
-    background: #F5F5F5;
-    border-bottom: 1px solid #DDD;
-    padding: 5px 0;
-    text-align: center;
-    font-size: 13px;
-    span {
-      margin-right: 8px;
-    }
+  color: #777;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+  text-align: center;
+  font-size: 13px;
+  span {
+    margin-right: 8px;
+  }
 }
 .new {
   text-align: left;
@@ -263,21 +309,39 @@ export default {
   margin-top: 8px;
 }
 /deep/ .el-icon-setting:before {
-    font-size: 26px;
+  font-size: 26px;
 }
 /deep/ .el-icon-video-play:before {
-    font-size: 26px;
+  font-size: 26px;
 }
 /deep/ .el-icon-video-pause:before {
-    font-size: 26px;
+  font-size: 26px;
 }
 /deep/ .el-icon-download:before {
-    font-size: 26px;
+  font-size: 26px;
 }
 /deep/ .el-button.is-circle {
-    border: 0;
+  border: 0;
 }
 /deep/ .el-slider__runway {
-    width: 44%;
+  width: 44%;
+}
+/deep/ .el-icon-delete:before {
+  font-size: 20px;
+}
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="container reply" style="margin-top: 10px">
+         <el-backtop></el-backtop>
     <div class="row justify-content-center">
       <div class="col-12 col-md-8">
         <div class="jumbotron" v-if="postData.length > 0">
@@ -8,20 +9,84 @@
           <hr class="my-4" />
           <p>{{postData[id].author}}</p>
           <p style="cursor:pointer">
-            <span>如果你喜欢这篇帖子可以给点个小爱心</span><span class="iconfont icon-xihuan" @click="likeReply()"></span>
+            <span>如果你喜欢这篇帖子可以给点个小爱心</span>
+            <span
+              class="iconfont icon-xihuan"
+              @click="likeReply(postData[id]._id, postData[id].like)"
+            ></span>
           </p>
         </div>
         <div class="textarea">
-          <el-input type="textarea" v-model="form.desc" placeholder="在这里可以随意评论" maxlength="50" show-word-limit></el-input>
-          <div class="button" @click="publish">
+          <el-input
+            type="textarea"
+            v-model="form.desc"
+            placeholder="在这里可以随意评论"
+            maxlength="50"
+            show-word-limit
+          ></el-input>
+          <div class="button" @click="publish(postData[id].reply)">
             <el-button>发布</el-button>
           </div>
         </div>
       </div>
     </div>
-    <div class="row justify-content-center" v-if="replyData.length > 0">
-      <div class="col-12 col-md-8" v-for="(item,index) in replyData" :key="index">
-        <div class="card">
+    <div class="row justify-content-center" v-if="replyData.length > 0" style="margin-bottom:100px">
+      <div
+        class="col-12 col-md-8"
+        v-for="(item,index) in replyData"
+        :key="index"
+        style="margin-top:10px"
+      >
+        <div class="flex">
+          <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>&nbsp;&nbsp;
+          <span>{{item.name}}</span>
+        </div>
+        <div style="padding-left:50px;" class="flex1">
+          <span>{{item.desc}}</span>
+          <span>
+            <span style="cursor:pointer" @click="getName($event, item._id, index, item.name)">
+              <i class="el-icon-chat-round"></i>
+            </span>
+            <span
+              style="cursor:pointer"
+              @click="delComment(item._id)"
+              v-if="$store.state.isManager || item.name === $store.state.loginState"
+            >
+              <i class="el-icon-delete"></i>
+            </span>
+          </span>
+        </div>
+        <div style="padding-left:50px;">
+          <div v-for="(item1,index1) in reply1Data[index]" :key="index1" style="margin-top:10px">
+            <div class="flex">
+              <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>&nbsp;&nbsp;
+              <span>{{item1.name2}}</span>
+            </div>
+            <div class="flex1" style="padding-left:50px;">
+              <span>{{item1.desc}}</span>
+              <span>
+                <span style="cursor:pointer" @click="getName($event, item._id, index, item1.name2)">
+                  <i class="el-icon-chat-round"></i>
+                </span>
+                <span
+                  style="cursor:pointer"
+                  @click="delReply(item1._id)"
+                  v-if="$store.state.isManager || item1.name2 === $store.state.loginState"
+                >
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" v-if="index === flag">
+          <el-input type="textarea" v-model="form1.desc" :placeholder="`输入你想对${form1.name1}的话`"></el-input>
+          <div class="button">
+            <el-button @click="publishReply1">回复</el-button>
+            <el-button @click="flag = -1">取消</el-button>
+          </div>
+        </div>
+        <!-- <div class="card">
           <div class="card-body">
             <span>
               <el-button type="text" @click="getName($event, item._id, index)">{{item.name}}</el-button>
@@ -40,7 +105,7 @@
               <el-button>发布</el-button>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
@@ -52,7 +117,8 @@ export default {
       form: {
         desc: '',
         name: '',
-        podtId: ''
+        podtId: '',
+        reply: 0
       },
       form1: {
         name1: '',
@@ -75,6 +141,7 @@ export default {
           data: this.form1
         })
         .then(() => {
+          this.form1.desc = ''
           this.$message({
             message: '发布成功',
             type: 'success'
@@ -83,17 +150,19 @@ export default {
           this.flag = -1
         })
     },
-    publish () {
+    publish (reply) {
       if (!sessionStorage.getItem('name')) {
         this.$router.push('/login')
       }
-      this.form.postId = this.postData[this.$route.params.id]._id
+      this.form.postId = this.postData[0]._id
       this.form.name = sessionStorage.getItem('name')
+      this.form.reply = reply
       this.$axios
         .post('/publishReply', {
           data: this.form
         })
         .then(() => {
+          this.form.desc = ''
           this.$message({
             message: '发布成功',
             type: 'success'
@@ -101,17 +170,49 @@ export default {
           this.mouteds()
         })
     },
-    getName (e, id, index) {
+    getName (e, id, index, name) {
       this.flag = index
-      this.form1.name1 = e.target.outerText
+      this.form1.name1 = name
       this.form1.name2 = sessionStorage.getItem('name')
-      this.form1.postId = this.postData[this.$route.params.id]._id
+      this.form1.postId = this.postData[0]._id
       this.form1.name1Id = id
+    },
+    delReply (id) {
+      this.$axios
+        .post('/delPostReply', {
+          data: id
+        })
+        .then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.desc = ''
+          this.mouteds()
+        })
+    },
+    delComment (id, reply) {
+      this.$axios
+        .post('/delPostComment', {
+          data: {
+            id,
+            postId: this.postData[0]._id,
+            reply: this.postData[0].reply
+          }
+        })
+        .then(() => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.mouteds()
+          this.desc = ''
+        })
     },
     mouteds () {
       this.$axios
         .post('/getReply', {
-          data: this.postData[this.$route.params.id]._id
+          data: this.postData[0]._id
         })
         .then(async res => {
           this.replyData = res.data.res
@@ -144,11 +245,20 @@ export default {
       }
       return window.btoa(binary)
     },
-    likeReply () {
-      this.$message({
-        message: '帖子主已收到',
-        type: 'success'
-      })
+    likeReply (postId, like) {
+      this.$axios
+        .post('/likePost', {
+          data: {
+            postId,
+            like
+          }
+        })
+        .then(() => {
+          this.$message({
+            message: '帖子主已收到',
+            type: 'success'
+          })
+        })
     },
     _base64ToArrayBuffer (base64) {
       var binarystring = window.atob(base64)
@@ -161,16 +271,14 @@ export default {
     }
   },
   async mounted () {
-    this.id = this.$route.params.id
-    await this.$axios.get('/getPosts').then(res => {
-      for (var i = 0; i < res.data.res.length; i++) {
-        var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], {
-          type: 'image/png'
-        })
-        res.data.res[i].img = URL.createObjectURL(aaa)
-      }
-      this.postData = res.data.res
-    })
+    await this.$axios
+      .post('/getPostsOne', {
+        data: this.$route.params.id
+      })
+      .then(res => {
+        this.postData = res.data.res
+        console.log('res', res.data.res[0])
+      })
     this.mouteds()
   }
 }
@@ -187,5 +295,19 @@ export default {
   margin-top: 10px;
   float: right;
   margin-bottom: 10px;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.flex1 {
+  display: flex;
+  justify-content: space-between;
+}
+/deep/ .el-icon-chat-round:before {
+  font-size: 20px;
+}
+/deep/ .el-icon-delete:before {
+  font-size: 20px;
 }
 </style>

@@ -1,14 +1,12 @@
 <template>
-  <div class="container register">
+  <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 col-10 col-lg-6">
         <el-form
           :model="ruleForm"
-          status-icon
           :rules="rules"
           ref="ruleForm"
           label-width="70px"
-          class="demo-ruleForm"
           style="margin-top: 20px"
           label-position="top"
         >
@@ -19,13 +17,19 @@
             <h1 style="mix-width:130px" class="title">注册界面</h1>
           </el-form-item>
           <el-form-item label="用户名" prop="name">
-            <el-input type="type" v-model="ruleForm.name" autocomplete="off"></el-input>
+            <el-input type="type" v-model="ruleForm.name" autocomplete="off" clearable>
+              <i slot="prefix" class="el-input__icon el-icon-user"></i>
+            </el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.pass" autocomplete="off" show-password clearable>
+              <i slot="prefix" class="el-input__icon el-icon-lock"></i>
+            </el-input>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" show-password clearable>
+              <i slot="prefix" class="el-input__icon el-icon-lock"></i>
+            </el-input>
           </el-form-item>
           <el-form-item>
             <el-button
@@ -144,5 +148,11 @@ export default {
   font-size: 24px;
   font-weight: 300;
   letter-spacing: -0.5px;
+}
+/deep/.el-input--prefix .el-input__inner {
+    border-radius: 20px;
+}
+/deep/ .el-button {
+  border-radius: 20px;
 }
 </style>

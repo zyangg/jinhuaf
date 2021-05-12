@@ -3,43 +3,53 @@
     <div class="row">
       <div class="col-12">
         <div class="row marTop">
-          <div class="col-12">
-            <button
-              type="button"
-              class="btn btn-light btn-lg btn-block"
-              @click="$router.push('/publishPost')"
-            >我要发贴</button>
+          <div class="col-12 flex">
+            <div>
+              <el-input
+                placeholder="请输入内容"
+                v-model="searchArticle"
+                clearable
+                class="input-with-select"
+              >
+                <el-button slot="append" icon="el-icon-search" circle @click="search()"></el-button>
+              </el-input>
+            </div>
+            <div>
+              <el-button type="primary" icon="el-icon-plus" circle @click="publishPost()"></el-button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12" v-for="(item,index) in this.postData" :key="index"
-      v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)"
+      <div
+        class="col-lg-3 col-md-4 col-sm-6 col-12"
+        v-for="(item,index) in this.postData"
+        :key="index"
       >
-        <div class="card">
-          <img class="card-img-top" :src="item.img" alt="Card image cap" />
+        <div class="card" style="margin-top:15px">
+          <img class="card-img-top" :src="item.img" alt width="100%" height="200px" />
           <div class="card-body">
-            <h5 class="card-title">{{item.name}}</h5>
-            <p
-              class="card-text"
-            >{{item.desc}}</p>
+            <h5 class="card-title ellipis">{{item.name}}</h5>
+            <p class="card-text ellipis">{{item.desc}}</p>
           </div>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">发帖人: {{item.author}}</li>
             <li class="list-group-item">时间：{{item.date}}-{{item.time}}</li>
             <li class="list-group-item">
-             <span class="iconfont icon-xihuan marlr">
-               <span class="font">{{item.like}}</span></span>
-             <span class="iconfont icon-pinglun marlr">
-               <span class="font">{{replyNum}}</span></span>
+              <span class="iconfont icon-xihuan marlr">
+                <span class="font">{{item.like}}</span>
+              </span>
+              <span class="iconfont icon-pinglun marlr">
+                <span class="font">{{item.reply}}</span>
+              </span>
             </li>
           </ul>
           <div class="card-body">
-            <el-button type="text" class="card-link" @click="goReply(index)">看帖子</el-button>
+            <el-button type="text" class="card-link" @click="goReply(item._id)">看帖子</el-button>
           </div>
         </div>
       </div>
-           <!-- 底部分页 -->
+      <!-- 底部分页 -->
       <div class="col-12 d-none d-md-block" style="margin-top:20px;margin-bottom:20px">
         <el-pagination
           background
@@ -52,7 +62,7 @@
           :total="total"
         ></el-pagination>
       </div>
-         <div class="col-12 d-block d-md-none" style="margin-top:20px;margin-bottom:20px">
+      <div class="col-12 d-block d-md-none" style="margin-top:20px;margin-bottom:20px">
         <el-pagination
           small
           background
@@ -79,10 +89,39 @@ export default {
       replyNum: 0,
       total: 0,
       size: 5,
-      currentPage: 1
+      currentPage: 1,
+      searchArticle: ''
     }
   },
   methods: {
+    search () {
+      if (this.searchArticle === '') {
+        this.getPosts()
+      } else {
+        this.currentPage = 1
+        this.searchFindPost()
+      }
+    },
+    searchFindPost () {
+      this.$axios.post('/findPost', {
+        data: {
+          size: this.size,
+          currentPage: this.currentPage,
+          value: this.searchArticle
+        }
+      }).then((res) => {
+        for (var i = 0; i < res.data.res.res.length; i++) {
+          var aaa = new Blob(
+            [this._base64ToArrayBuffer(res.data.res.res[i].img)],
+            { type: 'image/png' }
+          )
+          res.data.res.res[i].img = URL.createObjectURL(aaa)
+          this.getReply(res.data.res.res[i]._id)
+        }
+        this.postData = res.data.res.res
+        this.total = res.data.res.total
+      })
+    },
     transformArrayBufferToBase64 (buffer) {
       var binary = ''
       var bytes = new Uint8Array(buffer)
@@ -100,39 +139,60 @@ export default {
       }
       return bytes.buffer
     },
-    goReply (index) {
-      this.$router.push({name: 'reply', params: {id: index}})
+    goReply (id) {
+      this.$router.push({ name: 'reply', params: { id } })
     },
     getReply (id) {
       var self = this
-      this.$axios.post('/getReply', {data: id}).then((res) => {
+      this.$axios.post('/getReply', { data: id }).then(res => {
         self.replyNum = res.data.res.length
       })
     },
     handleSizeChange (val) {
       this.size = val
+      this.getPosts()
     },
     handleCurrentChange (val) {
       this.currentPage = val
+      this.getPosts()
+    },
+    publishPost () {
+      if (this.$store.state.loginState === null) {
+        this.$message('请先登录')
+      } else {
+        this.$router.push('/publishPost')
+      }
+    },
+    getPosts () {
+      this.$axios
+        .post('/getPosts', {
+          data: {
+            size: this.size,
+            currentpage: this.currentPage
+          }
+        })
+        .then(res => {
+          for (var i = 0; i < res.data.res.res.length; i++) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res.res[i].img)],
+              { type: 'image/png' }
+            )
+            res.data.res.res[i].img = URL.createObjectURL(aaa)
+            this.getReply(res.data.res.res[i]._id)
+          }
+          this.postData = res.data.res.res
+          this.total = res.data.res.total
+        })
     }
   },
   mounted () {
-    this.$axios.get('/getPosts').then((res) => {
-      for (var i = 0; i < res.data.res.length; i++) {
-        var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
-        res.data.res[i].img = URL.createObjectURL(aaa)
-        this.getReply(res.data.res[i]._id)
-      }
-      this.postData = res.data.res
-      this.total = this.postData.length
-      this.$store.commit('savePost', res.data.res)
-    })
+    this.getPosts()
   }
 }
 </script>
 
 <style scoped lang="less">
-@import '../assets/font/iconfont.css';
+@import "../assets/font/iconfont.css";
 .talk {
   text-align: left;
 }
@@ -144,5 +204,14 @@ export default {
 }
 .font {
   margin: 0 8px;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.ellipis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

@@ -26,6 +26,7 @@
         <el-upload
           ref="upload"
           action="#"
+          multiple
           list-type="picture-card"
           :auto-upload="false"
           :on-preview="handlePictureCardPreview"
@@ -35,7 +36,7 @@
           <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="form.dialogImageUrl" alt />
+          <img width="100%" :src="imgSrc" alt />
         </el-dialog>
       </el-form-item>
             <el-form-item label="发布时间">
@@ -55,7 +56,7 @@
         </el-col>
       </el-form-item>
       <el-form-item label="新闻内容">
-        <el-input type="textarea" v-model="form.content" :rows="20" maxlength="30"
+        <el-input type="textarea" v-model="form.content" :rows="20" maxlength="2000"
   show-word-limit></el-input>
       </el-form-item>
       <el-form-item>
@@ -73,17 +74,20 @@ export default {
         title: '',
         describe: '',
         content: '',
-        dialogImageUrl: '',
+        dialogImageUrl: [],
         date: '',
         time: '',
         author: '',
         type: ''
       },
-      dialogVisible: false
+      dialogVisible: false,
+      imgSrc: ''
     }
   },
   methods: {
     async onSubmit () {
+      this.form.content = this.form.content.trim()
+      this.form.describe = this.form.describe.trim()
       this.$axios
         .post('/publish', {
           data: this.form
@@ -93,37 +97,36 @@ export default {
             message: '发布成功',
             type: 'success'
           })
+          this.form.dialogImageUrl = []
         })
     },
     handleRemove (file, fileList) {
       console.log('remove', file, fileList)
     },
     handlePictureCardPreview (file) {
-      console.log('file', file, file.url)
-      this.form.dialogImageUrl = file.url
+      this.imgSrc = file.url
+      console.log('aaaaaa', this.imgSrc)
       this.dialogVisible = true
     },
-    async change (file) {
+    async change (file, filelist) {
       var that = this
-      console.log('change', file, typeof file.raw)
       var reader = new FileReader()
       reader.addEventListener('loadend', function (e) {
-        // console.log('ee', that.transformArrayBufferToBase64(e.target.result), e.target.result)
-        that.form.dialogImageUrl = that.transformArrayBufferToBase64(
+        that.form.dialogImageUrl.push(that.transformArrayBufferToBase64(
           e.target.result
-        )
+        ))
         // reader.result 包含被转化为类型数组 typed array 的 blob
-        console.log(
-          'result',
-          that._base64ToArrayBuffer(
-            that.transformArrayBufferToBase64(e.target.result)
-          ),
-          e.target.result
-        )
-        var aaa = new Blob([e.target.result], { type: 'image/png' })
-        console.log('aaaa', URL.createObjectURL(aaa))
+        // console.log(
+        //   'result',
+        //   that._base64ToArrayBuffer(
+        //     that.transformArrayBufferToBase64(e.target.result)
+        //   ),
+        //   e.target.result
+        // )
+        // var aaa = new Blob([e.target.result], { type: 'image/png' })
+        // console.log('aaaa', URL.createObjectURL(aaa))
       })
-
+      console.log('aa', that.form.dialogImageUrl)
       reader.readAsArrayBuffer(file.raw)
     },
     transformArrayBufferToBase64 (buffer) {

@@ -31,6 +31,7 @@
             <el-upload
               ref="upload"
               action="#"
+              multiple
               list-type="picture-card"
               :auto-upload="false"
               :on-preview="handlePictureCardPreview"
@@ -134,4 +135,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.container {
+  text-align: left;
+}
 </style>

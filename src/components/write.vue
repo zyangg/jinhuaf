@@ -8,11 +8,11 @@
      default-active="1"
       class="el-menu-vertical-demo">
      <el-menu-item index="1">
-        <i class="el-icon-setting"></i>
-        <router-link to="/publishArticle" active-class="active">文章发布</router-link>
+        <i class="el-icon-position"></i>
+        <router-link to="/publishArticle" active-class="active">新闻发布</router-link>
       </el-menu-item>
       <el-menu-item index="2">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-user-solid"></i>
         <router-link to="/userManage" active-class="active">人员管理</router-link>
       </el-menu-item>
       <el-menu-item index="3">

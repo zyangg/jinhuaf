@@ -28,14 +28,15 @@
         </div>
       </div>
       <div class="col-md-4 col-12 col-xl-3 col-sm-6"
-       v-for="(item, index) in tempData" :key="index" v-show="index > (size*(currentPage-1) - 1) && index < size*(currentPage)">
-        <el-card :body-style="{ padding: '0px' }">
+       v-for="(item, index) in tempData" :key="index">
+        <el-card :body-style="{ padding: '0px' }" style="margin-top:15px">
           <img
-            :src="item.img"
+            :src="item.img[0]"
             class="image"
-          />
+            width="100%"
+            height="200px"       />
           <div style="padding: 14px;">
-            <span>{{item.title}}</span>
+            <div class="newTitle">{{item.title}}</div>
             <div class="bottom clearfix">
               <time class="time">{{ item.date }}{{item.time}}</time>
               <el-button type="text" class="button" @click="routeToNew(item._id, item.count)">查看全文</el-button>
@@ -44,16 +45,30 @@
         </el-card>
       </div>
            <!-- 底部分页 -->
-      <div class="col-12 mar20" style="margin-top:15px;margin-bottom:15px">
+      <div class="col-12 mar20 d-none d-md-block" style="margin-top:15px;margin-bottom:15px">
         <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
           :page-sizes="[5, 10, 15, 20]"
-          :page-size="1"
+          :page-size="size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
+        ></el-pagination>
+      </div>
+      <div class="col-12 mar20 d-block d-md-none" style="margin-top:15px;margin-bottom:15px">
+        <el-pagination
+          small
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="size"
+          layout="sizes, prev, pager"
+          :total="total"
+          :pager-count="5"
         ></el-pagination>
       </div>
     </div>
@@ -65,9 +80,10 @@ export default {
   data () {
     return {
       currentPage: 1,
+      type: 0,
       datePick: '',
       currentDate: new Date(),
-      value: this.$route.params.value,
+      value: this.$route.query.value,
       checkAll: false,
       checkedType: ['meishi', 'yule'],
       trans: {
@@ -86,29 +102,53 @@ export default {
       size: 5
     }
   },
+  watch: {
+    $route: {
+      handler () {
+        this.value = this.$route.query.value
+        this.findNewByValue()
+      },
+      deep: true
+    }
+  },
   mounted () {
-    this.getNews()
+    this.findNewByValue()
   },
   methods: {
     handleSizeChange (val) {
       this.size = val
+      if (this.type === 1) {
+        this.findNewByValue()
+      }
+      if (this.type === 2) {
+        this.advSearch()
+      }
     },
     handleCurrentChange (val) {
       this.currentPage = val
+      if (this.type === 1) {
+        this.findNewByValue()
+      }
+      if (this.type === 2) {
+        this.advSearch()
+      }
     },
-    getNews () {
+    findNewByValue () {
       var that = this
-      this.$axios.get('/getNews').then(res => {
-        for (var i = 0; i < res.data.res.length; i++) {
-          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
-          res.data.res[i].img = URL.createObjectURL(aaa)
+      this.$axios.post('/findNewByValue', {
+        data: {
+          value: that.value,
+          size: that.size,
+          currentPage: that.currentPage
         }
-        that.newsData = res.data.res
-        that.tempData = that.newsData.filter((el) => {
-          return el.title.includes(that.value) || el.content.includes(that.value) ||
-          el.describe.includes(that.value)
-        })
-        that.total = that.tempData.length
+      }).then((res) => {
+        for (var i = 0; i < res.data.res.res.length; i++) {
+          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.res[i].img[0])], { type: 'image/png' })
+          res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+        }
+        that.tempData = res.data.res.res
+        that.total = res.data.res.total
+        that.type = res.data.res.type
       })
     },
     handleCheckAllChange (val) {
@@ -142,19 +182,21 @@ export default {
       console.log('aaaa', this.datePick)
     },
     advSearch () {
-      console.log('aaaaa', this.checkedType)
       this.$axios.post('/searchFindNew', {
         data: {
           datePick: this.datePick,
-          checkedType: this.checkedType
+          checkedType: this.checkedType,
+          size: this.size,
+          currentPage: this.currentPage
         }
       }).then((res) => {
-        for (var i = 0; i < res.data.res.length; i++) {
-          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res[i].img)], { type: 'image/png' })
-          res.data.res[i].img = URL.createObjectURL(aaa)
+        for (var i = 0; i < res.data.res.res.length; i++) {
+          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.res[i].img[0])], { type: 'image/png' })
+          res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
         }
-        this.tempData = res.data.res
-        this.total = this.tempData.length
+        this.tempData = res.data.res.res
+        this.total = res.data.res.total
+        this.type = res.data.res.type
       })
     },
     routeToNew (id, count) {
@@ -207,5 +249,10 @@ export default {
 }
 /deep/ .el-date-editor .el-range-separator {
     width: 10%;
+}
+.newTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

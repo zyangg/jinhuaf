@@ -1,10 +1,15 @@
 <template>
   <div class="userManage">
-    <el-row>
-      <el-col :span="5"><el-input  placeholder="请输入内容" v-model="searchUser" clearable></el-input></el-col>
-      <el-col :span="5"><el-button icon="el-icon-search" circle @click="search()"></el-button></el-col>
-      <el-col :span="5"><el-button type="primary" icon="el-icon-plus" circle @click="addUser"></el-button></el-col>
-    </el-row>
+    <div style="margin-top: 15px;margin-bottom:15px;" class="flex">
+      <div>
+        <el-input placeholder="请输入内容" v-model="searchUser" clearable class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" circle @click="search()"></el-button>
+        </el-input>
+      </div>
+      <div>
+        <el-button type="primary" icon="el-icon-plus" circle @click="addUser"></el-button>
+      </div>
+    </div>
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column prop="name" label="用户名" width="180"></el-table-column>
       <el-table-column prop="password" label="密码" width="180"></el-table-column>
@@ -14,36 +19,38 @@
           <span v-else-if="scope.row.manager === false">用户</span>
         </template>
       </el-table-column>
-      <el-table-column prop="yule" label="娱乐"></el-table-column>
-      <el-table-column prop="meishi" label="美食"></el-table-column>
-      <el-table-column prop="shehui" label="社会"></el-table-column>
-      <el-table-column prop="caijing" label="财经"></el-table-column>
-      <el-table-column prop="keji" label="科技"></el-table-column>
-      <el-table-column prop="shizheng" label="时政"></el-table-column>
+      <el-table-column prop="yule" label="娱乐新闻"></el-table-column>
+      <el-table-column prop="meishi" label="美食新闻"></el-table-column>
+      <el-table-column prop="shehui" label="社会新闻"></el-table-column>
+      <el-table-column prop="caijing" label="财经新闻"></el-table-column>
+      <el-table-column prop="keji" label="科技新闻"></el-table-column>
+      <el-table-column prop="shizheng" label="时政新闻"></el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
           <el-button
             type="text"
             size="small"
-            @click="Modify(scope.row.name, scope.row.password, scope.row.manager)"
+            @click="Modify(scope.row.name,
+            scope.row.password, scope.row.manager, scope.row.yule,
+            scope.row.meishi, scope.row.keji, scope.row.caijing, scope.row.shizheng, scope.row.shehui)"
           >编辑</el-button>
           <el-button type="text" size="small" @click="Delete(scope.row.name, scope.row.manager)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-          <div class="block" style="margin-top:20px">
-    <el-pagination
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[5, 10, 15, 20]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
-    </el-pagination>
-  </div>
-    <el-dialog title="添加" :visible.sync="dialogAdd" width="50%" :before-close="handleClose">
+    <div class="block" style="margin-top:20px">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5, 10, 15, 20]"
+        :page-size="size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
+    <el-dialog title="添加用户" :visible.sync="dialogAdd" width="40%" :before-close="handleClose">
       <el-form label-width="80px" :model="addForm" :rules="rules" ref="addForm">
         <el-form-item label="用户名" prop="name">
           <el-input v-model="addForm.name"></el-input>
@@ -61,7 +68,7 @@
         <el-button type="primary" @click="confirmAdd()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="编辑" :visible.sync="dialogModify" width="50%" :before-close="handleClose">
+    <el-dialog title="编辑用户" :visible.sync="dialogModify" width="40%" :before-close="handleClose">
       <el-form label-width="80px" :model="modifyForm">
         <el-form-item label="用户名">
           <el-input v-model="modifyForm.name" readonly></el-input>
@@ -73,13 +80,31 @@
           <el-radio v-model="modifyForm.manager" :label="true">管理员</el-radio>
           <el-radio v-model="modifyForm.manager" :label="false">用户</el-radio>
         </el-form-item>
+        <el-form-item label="娱乐新闻">
+          <el-input v-model="modifyForm.yule" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="美食新闻">
+          <el-input v-model="modifyForm.meishi" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="科技新闻">
+          <el-input v-model="modifyForm.keji" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="财经新闻">
+          <el-input v-model="modifyForm.caijing" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="时政新闻">
+          <el-input v-model="modifyForm.shizheng" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="社会新闻">
+          <el-input v-model="modifyForm.shehui" readonly></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogModify = false">取 消</el-button>
         <el-button type="primary" @click="confirmModify()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除" :visible.sync="dialogDelete" width="50%" :before-close="handleClose">
+    <el-dialog title="删除用户" :visible.sync="dialogDelete" width="30%" :before-close="handleClose">
       <span>确认删除用户信息吗？删除后无法修改</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogDelete = false">取 消</el-button>
@@ -105,6 +130,7 @@ export default {
     return {
       currentPage: 1,
       total: 20,
+      size: 5,
       searchUser: '',
       dialogAdd: false,
       dialogModify: false,
@@ -112,14 +138,16 @@ export default {
       tableData: [],
       tableDataTemp: [],
       deleteIdenty: false,
-      trans: {
-        true: '管理员',
-        false: '用户'
-      },
       modifyForm: {
         name: '',
         password: '',
-        manager: false
+        manager: false,
+        yule: 0,
+        meishi: 0,
+        caijing: 0,
+        shizheng: 0,
+        keji: 0,
+        shehui: 0
       },
       addForm: {
         name: '',
@@ -146,17 +174,47 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get('/getAllUser').then(res => {
-      this.tableData = res.data.res
-      this.tableDataTemp = res.data.res
-    })
+    this.getUser()
   },
   methods: {
-    search () {
-      this.tableData = this.tableDataTemp.filter((el) => {
-        return el.name.includes(this.searchUser) || el.password.includes(this.searchUser) ||
-        this.trans[el.manager].includes(this.searchUser)
+    getUser () {
+      this.$axios.post('/findUser', {
+        data: {
+          size: this.size,
+          currentPage: this.currentPage
+        }
+      }).then((res) => {
+        this.tableData = res.data.res.res
+        this.total = res.data.res.total
       })
+    },
+    findUser () {
+      this.$axios.post('/findUserByValue', {
+        data: {
+          value: this.searchUser,
+          size: this.size,
+          currentPage: this.currentPage
+        }
+      }).then((res) => {
+        this.tableData = res.data.res.res
+        this.total = res.data.res.total
+      })
+    },
+    handleSizeChange (val) {
+      this.size = val
+      this.getUser()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getUser()
+    },
+    search () {
+      if (this.searchUser === '') {
+        this.getUser()
+      } else {
+        this.currentPage = 1
+        this.findUser()
+      }
     },
     async check () {
       await this.$axios
@@ -177,7 +235,8 @@ export default {
             })
             .then(res => {
               this.dialogAdd = false
-              this.getAllUsers()
+              this.searchUser = ''
+              this.getUser()
               this.$message({
                 message: '注册成功',
                 type: 'success'
@@ -192,16 +251,27 @@ export default {
       this.dialogAdd = true
       this.$refs.addForm.resetFields()
     },
-    getAllUsers () {
-      this.$axios.get('/getAllUser').then(res => {
-        this.tableData = res.data.res
-      })
-    },
-    Modify (name, password, manager) {
+    Modify (
+      name,
+      password,
+      manager,
+      yule,
+      meishi,
+      keji,
+      caijing,
+      shizheng,
+      shehui
+    ) {
       this.dialogModify = true
       this.modifyForm.name = name
       this.modifyForm.password = password
       this.modifyForm.manager = manager
+      this.modifyForm.yule = yule
+      this.modifyForm.meishi = meishi
+      this.modifyForm.caijing = caijing
+      this.modifyForm.shizheng = shizheng
+      this.modifyForm.keji = keji
+      this.modifyForm.shehui = shehui
     },
     Delete (name, ismanage) {
       this.dialogDelete = true
@@ -222,7 +292,7 @@ export default {
           data: this.deleteName
         })
         .then(() => {
-          this.getAllUsers()
+          this.getUser()
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -244,7 +314,7 @@ export default {
           data: this.modifyForm
         })
         .then(() => {
-          this.getAllUsers()
+          this.getUser()
           this.$message({
             message: '修改成功',
             type: 'success'
@@ -255,7 +325,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .userManage {
-    text-align: left;
-  }
+.userManage {
+  text-align: left;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
 </style>

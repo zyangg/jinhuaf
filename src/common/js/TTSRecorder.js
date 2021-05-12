@@ -46,6 +46,7 @@ class TTSRecorder {
     this.audioDataOffset = 0
     this.temp = []
     this.status = 'play'
+    this.isPlay = true
     this.audioData.push(...this.temp)
     this.rawAudioData.push(...this.temp)
     //   this.rawAudioData.push(...e.data.rawAudioData)
@@ -78,9 +79,11 @@ class TTSRecorder {
       this.ttsWS = ttsWS
       ttsWS.onopen = e => {
         this.webSocketSend()
-        this.playTimeout = setTimeout(() => {
-          this.audioPlay()
-        }, 1000)
+        if (this.isPlay) {
+          this.playTimeout = setTimeout(() => {
+            this.audioPlay()
+          }, 1000)
+        }
       }
       ttsWS.onmessage = (e) => {
         this.result(e.data)
@@ -151,6 +154,7 @@ class TTSRecorder {
     }
   }
   downloadWAV () {
+    this.isPlay = false
     this.status = 'download'
     this.audioInit()
     this.connectWebSocket()
@@ -159,6 +163,7 @@ class TTSRecorder {
     }, 5000)
   }
   downloadPCM () {
+    this.isPlay = false
     this.status = 'download'
     this.audioInit()
     this.connectWebSocket()
@@ -289,6 +294,7 @@ class TTSRecorder {
       if (!this.audioContext) {
         this.audioInit()
       }
+      this.isPlay = true
       this.connectWebSocket()
     }
   }
