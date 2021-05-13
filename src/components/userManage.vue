@@ -128,6 +128,7 @@ export default {
       }
     }
     return {
+      type: 0,
       currentPage: 1,
       total: 20,
       size: 5,
@@ -186,6 +187,7 @@ export default {
       }).then((res) => {
         this.tableData = res.data.res.res
         this.total = res.data.res.total
+        this.type = res.data.res.type
       })
     },
     findUser () {
@@ -198,15 +200,26 @@ export default {
       }).then((res) => {
         this.tableData = res.data.res.res
         this.total = res.data.res.total
+        this.type = res.data.res.type
       })
     },
     handleSizeChange (val) {
       this.size = val
-      this.getUser()
+      if (this.type === 1) {
+        this.getUser()
+      }
+      if (this.type === 2) {
+        this.findUser()
+      }
     },
     handleCurrentChange (val) {
       this.currentPage = val
-      this.getUser()
+      if (this.type === 1) {
+        this.getUser()
+      }
+      if (this.type === 2) {
+        this.findUser()
+      }
     },
     search () {
       if (this.searchUser === '') {

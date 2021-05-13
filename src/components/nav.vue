@@ -1,7 +1,8 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand cursorNone" href="#">金华求新</a>
+      <div class="iconSpan" @click="$router.push({path: '/index'})"><i class="iconfont icon-xinwen"></i></div>
+      <span class="navbar-brand cursorNone"><span>金华求新</span></span>
       <button
         class="navbar-toggler"
         type="button"
@@ -51,7 +52,8 @@
           <li class="nav-item mar30" v-show="!$store.state.loginState">
             <router-link to="/register" class="nav-link" active-class="active">注册</router-link>
           </li>
-          <li class="nav-item dropdown mar30 me" v-show="$store.state.loginState">
+          <li class="nav-item dropdown mar30 me flex" v-show="$store.state.loginState">
+            <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
             <a
               class="nav-link dropdown-toggle me"
               href="#"
@@ -63,18 +65,6 @@
             >{{$store.state.loginState}}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="#" @click="logout()">退出</a>
-              <!-- <a class="dropdown-item" href="#">
-                <button type="button" class="btn btn-light">
-                  评论
-                  <span class="badge badge-light">4</span>
-                </button>
-              </a>
-              <a class="dropdown-item" href="#">
-                <button type="button" class="btn btn-light">
-                  回复
-                  <span class="badge badge-light">4</span>
-                </button>
-              </a> -->
             </div>
           </li>
         </ul>
@@ -131,6 +121,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+@import "../assets/font/iconfont.css";
 .navbar-light .navbar-nav .nav-link.active {
   color: black;
 }
@@ -146,5 +137,18 @@ export default {
 }
 .cursorNone {
   cursor: default;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.iconSpan {
+  display: inline-block;
+  width: 50px;
+  height: 40px;
+  line-height: 40px;
+}
+.iconfont {
+  font-size: 40px;
 }
 </style>

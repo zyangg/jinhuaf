@@ -27,7 +27,7 @@
         :key="index"
       >
         <div class="card" style="margin-top:15px">
-          <img class="card-img-top" :src="item.img" alt width="100%" height="200px" />
+          <img class="card-img-top" :src="item.img[0]" alt width="100%" height="200px" />
           <div class="card-body">
             <h5 class="card-title ellipis">{{item.name}}</h5>
             <p class="card-text ellipis">{{item.desc}}</p>
@@ -112,10 +112,10 @@ export default {
       }).then((res) => {
         for (var i = 0; i < res.data.res.res.length; i++) {
           var aaa = new Blob(
-            [this._base64ToArrayBuffer(res.data.res.res[i].img)],
+            [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
             { type: 'image/png' }
           )
-          res.data.res.res[i].img = URL.createObjectURL(aaa)
+          res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
           this.getReply(res.data.res.res[i]._id)
         }
         this.postData = res.data.res.res
@@ -174,10 +174,10 @@ export default {
         .then(res => {
           for (var i = 0; i < res.data.res.res.length; i++) {
             var aaa = new Blob(
-              [this._base64ToArrayBuffer(res.data.res.res[i].img)],
+              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
               { type: 'image/png' }
             )
-            res.data.res.res[i].img = URL.createObjectURL(aaa)
+            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
             this.getReply(res.data.res.res[i]._id)
           }
           this.postData = res.data.res.res

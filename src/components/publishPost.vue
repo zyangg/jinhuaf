@@ -41,11 +41,11 @@
               <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="form.dialogImageUrl" alt />
+              <img width="100%" :src="imgSrc" alt />
             </el-dialog>
           </el-form-item>
           <el-form-item label="帖子内容">
-            <el-input type="textarea" v-model="form.desc" :rows="5"></el-input>
+            <el-input type="textarea" v-model="form.desc" :rows="10"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">立即发布</el-button>
@@ -68,15 +68,15 @@ export default {
         desc: '',
         reply: 0,
         like: 0,
-        dialogImageUrl: ''
+        dialogImageUrl: []
       },
-      dialogVisible: false
+      dialogVisible: false,
+      imgSrc: ''
     }
   },
   methods: {
     onSubmit () {
       console.log('form', this.form)
-
       this.$axios
         .post('/publishPost', {
           data: this.form
@@ -86,6 +86,7 @@ export default {
             message: '发布成功',
             type: 'success'
           })
+          this.form.dialogImageUrl = []
         })
     },
     cancel () {
@@ -99,17 +100,16 @@ export default {
       console.log('remove', file, fileList)
     },
     handlePictureCardPreview (file) {
-      console.log('file', file, file.url)
-      this.form.dialogImageUrl = file.url
+      this.imgSrc = file.url
       this.dialogVisible = true
     },
     async change (file) {
       var that = this
       var reader = new FileReader()
       reader.addEventListener('loadend', function (e) {
-        that.form.dialogImageUrl = that.transformArrayBufferToBase64(
+        that.form.dialogImageUrl.push(that.transformArrayBufferToBase64(
           e.target.result
-        )
+        ))
       })
 
       reader.readAsArrayBuffer(file.raw)

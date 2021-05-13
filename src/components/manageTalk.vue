@@ -78,7 +78,6 @@ export default {
       if (this.searchArticle === '') {
         this.getAllNews()
       } else {
-        this.size = 5
         this.currentPage = 1
         this.searchFindPost()
       }
@@ -99,7 +98,7 @@ export default {
       this.$axios.post('/getPosts', {
         data: {
           size: this.size,
-          currentPage: this.currentPage
+          currentpage: this.currentPage
         }
       }).then(res => {
         this.tableData = res.data.res.res

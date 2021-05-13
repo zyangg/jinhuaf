@@ -1,13 +1,24 @@
 <template>
   <div class="container reply" style="margin-top: 10px">
-         <el-backtop></el-backtop>
+    <el-backtop></el-backtop>
     <div class="row justify-content-center">
       <div class="col-12 col-md-8">
         <div class="jumbotron" v-if="postData.length > 0">
           <h1 class="display-3" style="font-size:2.8rem">{{postData[id].name}}</h1>
           <p class="lead">{{postData[id].desc}}</p>
           <hr class="my-4" />
-          <p>{{postData[id].author}}</p>
+        </div>
+        <!-- 轮播图 -->
+        <div v-if="postData[0]">
+          <el-carousel :interval="5000" arrow="always" indicator-position="outside">
+            <el-carousel-item v-for="(item,index) in postData[0].img" :key="index">
+              <img :src="item" alt width="100%" height="100%" />
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+        <!-- 轮播图end -->
+        <div v-if="postData[0]">
+          <p>作者:{{postData[id].author}}</p>
           <p style="cursor:pointer">
             <span>如果你喜欢这篇帖子可以给点个小爱心</span>
             <span
@@ -30,12 +41,12 @@
         </div>
       </div>
     </div>
-    <div class="row justify-content-center" v-if="replyData.length > 0" style="margin-bottom:100px">
+    <div class="row justify-content-center" v-if="replyData.length > 0">
       <div
         class="col-12 col-md-8"
         v-for="(item,index) in replyData"
         :key="index"
-        style="margin-top:10px"
+        style="margin-top:10px;margin-bottom:100px"
       >
         <div class="flex">
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>&nbsp;&nbsp;
@@ -276,8 +287,14 @@ export default {
         data: this.$route.params.id
       })
       .then(res => {
+        for (var i = 0; i < res.data.res[0].img.length; i++) {
+          var aaa = new Blob(
+            [this._base64ToArrayBuffer(res.data.res[0].img[i])],
+            { type: 'image/png' }
+          )
+          res.data.res[0].img[i] = URL.createObjectURL(aaa)
+        }
         this.postData = res.data.res
-        console.log('res', res.data.res[0])
       })
     this.mouteds()
   }
@@ -309,5 +326,8 @@ export default {
 }
 /deep/ .el-icon-delete:before {
   font-size: 20px;
+}
+.jumbotron {
+  background-color: #fff;
 }
 </style>

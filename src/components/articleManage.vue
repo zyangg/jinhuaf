@@ -292,7 +292,7 @@ export default {
       var that = this
       this.$axios.post('/findNewByValue', {
         data: {
-          value: that.value,
+          value: that.searchArticle,
           size: that.size,
           currentPage: that.currentPage
         }

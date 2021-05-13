@@ -366,6 +366,7 @@
           :page-size="1"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
+          :pager-count="5"
         ></el-pagination>
       </div>
       <div class="col-12 d-block d-md-none" style="margin-top:20px;margin-bottom:20px">
