@@ -27,6 +27,18 @@
             <router-link to="/publishArticle" class="nav-link" active-class="active">网站管理</router-link>
           </li>
           <li class="nav-item">
+            <router-link to="/video" class="nav-link" active-class="active">视频新闻</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/englishNew" class="nav-link" active-class="active">英文新闻</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/audio" class="nav-link" active-class="active">动听金华</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/cartoon" class="nav-link" active-class="active">漫评金华</router-link>
+          </li>
+          <li class="nav-item">
             <router-link
               to="/userSetting"
               class="nav-link"

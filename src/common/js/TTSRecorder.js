@@ -112,7 +112,7 @@ class TTSRecorder {
         speed: this.speed,
         volume: this.voice,
         pitch: this.pitch,
-        bgs: 1,
+        bgs: 0,
         tte: this.tte
       },
       data: {

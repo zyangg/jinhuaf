@@ -17,6 +17,18 @@
             <span></span>
           </div>
         </div>
+       <div class="row mar10 justify-content-center" v-if="newsData.videoAudio && (newsData.class === 'video')">
+                  <video
+            :src="newsData.videoAudio"
+            autoplay="autoplay"
+            controls="controls"
+            height="200px"
+          />
+        </div>
+        <div class="row mar10 flex2" v-if="newsData.videoAudio && (newsData.class === 'audioNew')">
+          <audio :src="newsData.videoAudio" controls="controls"></audio>
+          <el-button type="text" @click="transText(newsData.videoAudio)">转文本</el-button>
+        </div>
         <div class="row mar10">
           <div class="col-12">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -77,6 +89,12 @@
         </div>
         <div class="textarea mar10">
           <el-input type="textarea" v-model="desc" placeholder="在这里可以随意评论" maxlength="50" show-word-limit></el-input>
+          <div class="button" @click="start()">
+            <el-button round>开始识别</el-button>
+          </div>
+          <div class="button" @click="stopIn()">
+            <el-button round>结束识别</el-button>
+          </div>
           <div class="button" @click="publish">
             <el-button round>发表评论</el-button>
           </div>
@@ -97,6 +115,7 @@
 </template>
 <script>
 import ttsRecorder from '../common/js/TTSRecorder'
+import IatRecorder from '../common/js/iatRecorder.js'
 export default {
   data: function () {
     return {
@@ -258,6 +277,22 @@ export default {
         .then(res => {
           this.newReply = res.data.res
         })
+    },
+    start () {
+      IatRecorder.start()
+      setInterval(() => {
+        if (IatRecorder.resultText) {
+          this.desc = IatRecorder.resultText
+        }
+      }, 2000)
+    },
+    stopIn () {
+      IatRecorder.stop()
+    },
+    async transText (url) {
+      await this.$axios.post('/downLoadUrl', {
+        data: url
+      })
     }
   }
 }
@@ -267,6 +302,11 @@ export default {
 .flex {
   display: flex;
   align-items: center;
+}
+.flex2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .flex1 {
   display: flex;

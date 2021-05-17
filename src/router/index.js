@@ -14,6 +14,10 @@ import publishPost from '@/components/publishPost'
 import searchFind from '@/components/searchFind'
 import userSetting from '@/components/userSetting'
 import manageTalk from '@/components/manageTalk'
+import video from '@/components/video'
+import englishNew from '@/components/englishNew'
+import audio from '@/components/audio'
+import cartoon from '@/components/cartoon'
 Vue.use(Router)
 
 export default new Router({
@@ -44,6 +48,11 @@ export default new Router({
       path: '/talk',
       name: 'talk',
       component: talk
+    },
+    {
+      path: '/englishNew',
+      name: 'englishNew',
+      component: englishNew
     },
     {
       path: '/write',
@@ -91,6 +100,21 @@ export default new Router({
       path: '/searchFind',
       name: 'searchFind',
       component: searchFind
+    },
+    {
+      path: '/video',
+      name: 'video',
+      component: video
+    },
+    {
+      path: '/audio',
+      name: 'audio',
+      component: audio
+    },
+    {
+      path: '/cartoon',
+      name: 'cartoon',
+      component: cartoon
     }
   ]
 })

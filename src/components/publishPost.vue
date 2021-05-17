@@ -7,7 +7,7 @@
             <el-input v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item label="发帖人">
-            <el-input v-model="form.author"></el-input>
+            <el-input v-model="form.author" readonly></el-input>
           </el-form-item>
           <el-form-item label="发布时间">
             <el-col :span="11">
@@ -74,6 +74,9 @@ export default {
       imgSrc: ''
     }
   },
+  mounted () {
+    this.form.author = this.$store.state.loginState
+  },
   methods: {
     onSubmit () {
       console.log('form', this.form)
@@ -111,7 +114,6 @@ export default {
           e.target.result
         ))
       })
-
       reader.readAsArrayBuffer(file.raw)
     },
     transformArrayBufferToBase64 (buffer) {
