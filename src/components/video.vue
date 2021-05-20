@@ -28,7 +28,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -41,7 +41,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="sizes, prev, pager"
           :total="total"
@@ -55,7 +55,7 @@
 export default {
   data () {
     return {
-      size: 5,
+      size: 6,
       total: 0,
       currentPage: 1,
       newData: []
@@ -74,8 +74,10 @@ export default {
         }
       }).then((res) => {
         for (var i = 0; i < res.data.res.res.length; i++) {
-          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.res[i].img[0])], { type: 'image/png' })
-          res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+          if (res.data.res.res[i].img[0]) {
+            var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.res[i].img[0])], { type: 'image/png' })
+            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+          }
         }
         this.total = res.data.res.total
         this.newData = res.data.res.res

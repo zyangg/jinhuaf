@@ -1,37 +1,96 @@
 <template>
   <div class="container cartoon">
-      <div><el-button type="primary">主要按钮</el-button>
-  <el-button type="success">成功按钮</el-button>
-  <el-button type="info">信息按钮</el-button></div>
     <div class="row">
-      <div class="col-sm-6 col-12 col-md-4 col-lg-4" style="margin-top:20px;margin-bottom:20px;"
-       v-for="(item,index) in newData"
-        :key="index">
-        <el-card :body-style="{ padding: '0px' }">
-          <video
-            :src="item.videoAudio"
-            controls="controls"
-            width="100%"
-            height="200px"
-          />
-          <div style="padding: 14px;">
-            <div class="ellipics">{{item.title}}</div>
-            <div class="bottom clearfix">
-              <time class="time">{{ item.date }}{{item.time}}</time>
-              <el-button type="text" class="button" @click="$router.push({name: 'new',
-                params: {_id: item._id, count: item.count}})">查看新闻</el-button>
+      <div class="col-12">
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="金报漫画" name="cartoon">
+            <div class="row">
+              <div
+                class="col-sm-6 col-12 col-md-4 col-lg-4"
+                style="margin-top:20px;margin-bottom:20px;"
+                v-for="(item,index) in cartoonData"
+                :key="index"
+              >
+                <el-card :body-style="{ padding: '0px' }">
+                  <img :src="item.img[0]" width="100%" height="200px" />
+                  <div style="padding: 14px;">
+                    <div class="ellipics">{{item.title}}</div>
+                    <div class="bottom clearfix">
+                      <time class="time">{{ item.date }}{{item.time}}</time>
+                      <el-button
+                        type="text"
+                        class="button"
+                        @click="$router.push({name: 'new',
+                params: {_id: item._id, count: item.count}})"
+                      >查看新闻</el-button>
+                    </div>
+                  </div>
+                </el-card>
+              </div>
             </div>
-          </div>
-        </el-card>
+          </el-tab-pane>
+          <el-tab-pane label="金报海报" name="bill">
+            <div class="row">
+              <div
+                class="col-sm-6 col-12 col-md-4 col-lg-4"
+                style="margin-top:20px;margin-bottom:20px;"
+                v-for="(item,index) in billData"
+                :key="index"
+              >
+                <el-card :body-style="{ padding: '0px' }">
+                  <img :src="item.img[0]" width="100%" height="200px" />
+                  <div style="padding: 14px;">
+                    <div class="ellipics">{{item.title}}</div>
+                    <div class="bottom clearfix">
+                      <time class="time">{{ item.date }}{{item.time}}</time>
+                      <el-button
+                        type="text"
+                        class="button"
+                        @click="$router.push({name: 'new',
+                params: {_id: item._id, count: item.count}})"
+                      >查看新闻</el-button>
+                    </div>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="金报长图" name="piiic">
+            <div class="row">
+              <div
+                class="col-sm-6 col-12 col-md-4 col-lg-4"
+                style="margin-top:20px;margin-bottom:20px;"
+                v-for="(item,index) in piiicData"
+                :key="index"
+              >
+                <el-card :body-style="{ padding: '0px' }">
+                  <img :src="item.img[0]" width="100%" height="200px" />
+                  <div style="padding: 14px;">
+                    <div class="ellipics">{{item.title}}</div>
+                    <div class="bottom clearfix">
+                      <time class="time">{{ item.date }}{{item.time}}</time>
+                      <el-button
+                        type="text"
+                        class="button"
+                        @click="$router.push({name: 'new',
+                params: {_id: item._id, count: item.count}})"
+                      >查看新闻</el-button>
+                    </div>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </div>
-         <!-- 底部分页 -->
+      <!-- 底部分页 -->
       <div class="col-12 d-none d-md-block" style="margin-top:20px;margin-bottom:20px">
         <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -44,7 +103,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="sizes, prev, pager"
           :total="total"
@@ -58,40 +117,123 @@
 export default {
   data () {
     return {
-      size: 5,
+      size: 6,
       total: 0,
       currentPage: 1,
-      newData: []
+      cartoonData: [],
+      billData: [],
+      piiicData: [],
+      activeName: 'cartoon'
     }
   },
   mounted () {
-    this.getEnglishNew()
+    this.getCartoonNew()
+    // this.getBillNew()
+    // this.getPiiicNew()
   },
   methods: {
-    getEnglishNew () {
-      this.$axios.post('/getNewByCartoonType', {
-        data: {
-          size: this.size,
-          currentPage: this.currentPage,
-          classs: 'cartoonNew',
-          chType: 'cartoon'
-        }
-      }).then((res) => {
-        for (var i = 0; i < res.data.res.res.length; i++) {
-          var aaa = new Blob([this._base64ToArrayBuffer(res.data.res.res[i].img[0])], { type: 'image/png' })
-          res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
-        }
-        this.total = res.data.res.total
-        this.newData = res.data.res.res
-      })
+    handleClick (tab, event) {
+      this.currentPage = 1
+      if (tab.name === 'bill') {
+        this.getBillNew()
+      }
+      if (tab.name === 'piiic') {
+        this.getPiiicNew()
+      }
+      if (tab.name === 'cartoon') {
+        this.getCartoonNew()
+      }
+    },
+    getCartoonNew () {
+      this.$axios
+        .post('/getNewByCartoonType', {
+          data: {
+            size: this.size,
+            currentPage: this.currentPage,
+            classs: 'cartoonNew',
+            chType: 'cartoon'
+          }
+        })
+        .then(res => {
+          for (var i = 0; i < res.data.res.res.length; i++) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
+              { type: 'image/png' }
+            )
+            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+          }
+          this.total = res.data.res.total
+          this.cartoonData = res.data.res.res
+        })
+    },
+    getBillNew () {
+      this.$axios
+        .post('/getNewByCartoonType', {
+          data: {
+            size: this.size,
+            currentPage: this.currentPage,
+            classs: 'cartoonNew',
+            chType: 'bill'
+          }
+        })
+        .then(res => {
+          for (var i = 0; i < res.data.res.res.length; i++) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
+              { type: 'image/png' }
+            )
+            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+          }
+          this.total = res.data.res.total
+          this.billData = res.data.res.res
+        })
+    },
+    getPiiicNew () {
+      this.$axios
+        .post('/getNewByCartoonType', {
+          data: {
+            size: this.size,
+            currentPage: this.currentPage,
+            classs: 'cartoonNew',
+            chType: 'piiic'
+          }
+        })
+        .then(res => {
+          for (var i = 0; i < res.data.res.res.length; i++) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
+              { type: 'image/png' }
+            )
+            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+          }
+          this.total = res.data.res.total
+          this.piiicData = res.data.res.res
+        })
     },
     handleSizeChange (val) {
       this.size = val
-      this.getEnglishNew()
+      if (this.activeName === 'bill') {
+        this.getBillNew()
+      }
+      if (this.activeName === 'piiic') {
+        this.getPiiicNew()
+      }
+      if (this.activeName === 'cartoon') {
+        this.getCartoonNew()
+      }
     },
     handleCurrentChange (val) {
       this.currentPage = val
-      this.getEnglishNew()
+      if (this.activeName === 'bill') {
+        this.getBillNew()
+      }
+      if (this.activeName === 'piiic') {
+        this.getPiiicNew()
+      }
+      if (this.activeName === 'cartoon') {
+        console.log('2')
+        this.getCartoonNew()
+      }
     },
     _base64ToArrayBuffer (base64) {
       var binarystring = window.atob(base64)
@@ -107,40 +249,40 @@ export default {
 </script>
 <style lang="less" scoped>
 .cartoon {
-    text-align: left;
+  text-align: left;
 }
 .time {
-    font-size: 13px;
-    color: #999;
-  }
+  font-size: 13px;
+  color: #999;
+}
 
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
 
-  .button {
-    padding: 0;
-    float: right;
-  }
+.button {
+  padding: 0;
+  float: right;
+}
 
-  .image {
-    width: 100%;
-    display: block;
-  }
+.image {
+  width: 100%;
+  display: block;
+}
 
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
 
-  .clearfix:after {
-      clear: both
-  }
-  .ellipics {
-      overflow: hidden;
+.clearfix:after {
+  clear: both;
+}
+.ellipics {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  }
+}
 </style>

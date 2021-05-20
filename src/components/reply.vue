@@ -46,7 +46,7 @@
         class="col-12 col-md-8"
         v-for="(item,index) in replyData"
         :key="index"
-        style="margin-top:10px;margin-bottom:100px"
+        style="margin-top:10px;margin-bottom:20px"
       >
         <div class="flex">
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>&nbsp;&nbsp;

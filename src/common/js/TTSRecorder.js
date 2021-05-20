@@ -82,7 +82,7 @@ class TTSRecorder {
         if (this.isPlay) {
           this.playTimeout = setTimeout(() => {
             this.audioPlay()
-          }, 1000)
+          }, 2000)
         }
       }
       ttsWS.onmessage = (e) => {

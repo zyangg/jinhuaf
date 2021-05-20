@@ -39,7 +39,7 @@
           <el-option label="科技" value="keji"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="新闻简介" v-if="!form.class === 'cartoonNew'">
+      <el-form-item label="新闻简介" v-if="!(form.class === 'cartoonNew')">
         <el-input v-model="form.describe"></el-input>
       </el-form-item>
       <el-form-item label="新闻图片">
@@ -71,7 +71,7 @@
           :on-remove="handleRemoveV"
         >
           <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          <div slot="tip" class="el-upload__tip">可以上传音频和视频</div>
         </el-upload>
       </el-form-item>
       <el-form-item label="发布时间">
@@ -118,7 +118,7 @@ export default {
       form: {
         title: '',
         describe: '',
-        cartoonType: 'cartoon',
+        cartoonType: '',
         content: '',
         dialogImageUrl: [],
         videoAudio: '',
@@ -132,7 +132,7 @@ export default {
       imgSrc: '',
       classOptions: [
         {
-          label: '文字新闻',
+          label: '文字图片新闻',
           value: 'font'
         },
         {
@@ -144,7 +144,7 @@ export default {
           value: 'video'
         },
         {
-          label: '漫画新闻',
+          label: '漫评金华',
           value: 'cartoonNew'
         },
         {

@@ -481,13 +481,15 @@ export default {
     getCarouselNewData () {
       this.$axios.get('/getCarouselNewData').then(res => {
         for (var i = 0; i < res.data.res.length; i++) {
-          var aaa = new Blob(
-            [this._base64ToArrayBuffer(res.data.res[i].img[0])],
-            {
-              type: 'image/png'
-            }
-          )
-          res.data.res[i].img[0] = URL.createObjectURL(aaa)
+          if (res.data.res[i].img[0]) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res[i].img[0])],
+              {
+                type: 'image/png'
+              }
+            )
+            res.data.res[i].img[0] = URL.createObjectURL(aaa)
+          }
         }
         this.carouselNewData = res.data.res
       })
@@ -503,13 +505,15 @@ export default {
         })
         .then(res => {
           for (var i = 0; i < res.data.res.res.length; i++) {
-            var aaa = new Blob(
-              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
-              {
-                type: 'image/png'
-              }
-            )
-            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+            if (res.data.res.res[i].img[0]) {
+              var aaa = new Blob(
+                [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
+                {
+                  type: 'image/png'
+                }
+              )
+              res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+            }
           }
           if (type === 'meishi') {
             this.meishi = res.data.res.res
@@ -543,13 +547,15 @@ export default {
         })
         .then(res => {
           for (var i = 0; i < res.data.res.res.length; i++) {
-            var aaa = new Blob(
-              [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
-              {
-                type: 'image/png'
-              }
-            )
-            res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+            if (res.data.res.res[i].img[0]) {
+              var aaa = new Blob(
+                [this._base64ToArrayBuffer(res.data.res.res[i].img[0])],
+                {
+                  type: 'image/png'
+                }
+              )
+              res.data.res.res[i].img[0] = URL.createObjectURL(aaa)
+            }
           }
           this.newsData = res.data.res.res
           this.total = res.data.res.total
@@ -559,13 +565,15 @@ export default {
     getnewRanking () {
       this.$axios.get('/newRanking').then(res => {
         for (var i = 0; i < res.data.res.length; i++) {
-          var aaa = new Blob(
-            [this._base64ToArrayBuffer(res.data.res[i].img[0])],
-            {
-              type: 'image/png'
-            }
-          )
-          res.data.res[i].img[0] = URL.createObjectURL(aaa)
+          if (res.data.res[i].img[0]) {
+            var aaa = new Blob(
+              [this._base64ToArrayBuffer(res.data.res[i].img[0])],
+              {
+                type: 'image/png'
+              }
+            )
+            res.data.res[i].img[0] = URL.createObjectURL(aaa)
+          }
         }
         this.newRank = res.data.res
       })

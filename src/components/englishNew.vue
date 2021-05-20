@@ -28,7 +28,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
@@ -41,7 +41,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="[5, 10, 15, 20]"
+          :page-sizes="[6, 10, 15, 20]"
           :page-size="size"
           layout="sizes, prev, pager"
           :total="total"
@@ -55,7 +55,7 @@
 export default {
   data () {
     return {
-      size: 5,
+      size: 6,
       total: 0,
       currentPage: 1,
       newData: []

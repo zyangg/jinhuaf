@@ -88,6 +88,18 @@ export default {
   mounted () {
     this.getOneUser()
   },
+  beforeRouteEnter (to, from, next) {
+    const store = from.matched[0].instances.default.$store
+    const message = from.matched[0].instances.default.$message
+    const router = from.matched[0].instances.default.$router
+    if (!store.state.loginState) {
+      message('您需要登录才能开启新闻推送功能')
+      router.push('/login')
+      next()
+    } else {
+      next()
+    }
+  },
   methods: {
     handleSizeChange (val) {
       this.size = val

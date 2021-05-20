@@ -43,7 +43,6 @@
               to="/userSetting"
               class="nav-link"
               active-class="active"
-              v-show="$store.state.loginState"
             >新闻推送</router-link>
           </li>
         </ul>

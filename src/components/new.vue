@@ -17,6 +17,9 @@
             <span></span>
           </div>
         </div>
+        <div class="row mar10 justify-content-center" v-if="(newsData.class === 'cartoonNew')">
+            <img :src="item" alt width="100%" height="100%" v-for="(item,index) in newsData.img" :key="index">
+        </div>
        <div class="row mar10 justify-content-center" v-if="newsData.videoAudio && (newsData.class === 'video')">
                   <video
             :src="newsData.videoAudio"
@@ -27,7 +30,6 @@
         </div>
         <div class="row mar10 flex2" v-if="newsData.videoAudio && (newsData.class === 'audioNew')">
           <audio :src="newsData.videoAudio" controls="controls"></audio>
-          <el-button type="text" @click="transText(newsData.videoAudio)">转文本</el-button>
         </div>
         <div class="row mar10">
           <div class="col-12">
@@ -41,7 +43,7 @@
             {{newsData.content.slice(0,newsData.content.length/2)}}
           </div>
         </div>
-        <div class="row justify-content-center" style="margin-top:10px;margin-bottom:15px">
+        <div class="row justify-content-center" style="margin-top:10px;margin-bottom:15px" v-if="!(newsData.class === 'cartoonNew')">
           <div class="col-8">
                   <el-carousel :interval="5000" arrow="always">
             <el-carousel-item v-for="(item,index) in newsData.img" :key="index">
@@ -191,6 +193,7 @@ export default {
         speed: this.form.speed,
         voice: this.form.voice
       })
+      console.log('aaaaaaaaaa', this.form.text)
       await ttsRecorder.start()
     },
     stop () {
@@ -263,6 +266,9 @@ export default {
             this.$message({
               message: '发布成功',
               type: 'success'
+            })
+            IatRecorder.setResultText({
+              resultText: ''
             })
             this.desc = ''
             this.getNewReply()
